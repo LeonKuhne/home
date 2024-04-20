@@ -1,0 +1,46 @@
+:root {
+  --primary-font-size: 24px;
+  --primary-color: #fee;
+  --shadow-color: #433;
+}
+
+body {
+  margin: 0;
+}
+
+body, input {
+  color: var(--primary-color);
+  background: var(--shadow-color);
+  font-size: var(--primary-font-size);
+}
+
+input {
+  border: none;
+  border-bottom: 1px solid var(--primary-color);
+}
+
+input:focus {
+  outline: none;
+}
+
+#app {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+
+.todo-item {
+  display: flex;
+}
+.todo-item .content {
+  flex: 1;
+}
+.todo-item .remove-todo {
+  color: red;
+  display: inline-block;
+  cursor: pointer;
+}
+
+/*# sourceMappingURL=styles.css.map */
