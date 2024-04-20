@@ -1,9 +1,5 @@
-# A Simple Template, For Simple Projects
-
-# Stack
-### PUG - syntax
-### VUE - code
-### SASS - style
+# My personal home page
 
 # About
-### Uses CDN imports
+## All data stored in browser's local storage
+## Optimized for performance and readability using pug, sass and custom templating
