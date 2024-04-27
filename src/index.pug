@@ -22,4 +22,11 @@ html(lang='en')
             .todo-item 
               .content $item
               .remove-todo x
-      #space
+      #want
+        h2.info WANTS
+        div
+          input(type="text", placeholder="new item", id="add-want")
+          .for(list="$wantList")
+            .want-item 
+              .content $item
+              .remove-want x

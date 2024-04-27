@@ -41,6 +41,7 @@ input:focus {
   color: red;
   display: inline-block;
   cursor: pointer;
+  user-select: none;
 }
 
 /*# sourceMappingURL=styles.css.map */
