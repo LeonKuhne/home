@@ -10,23 +10,11 @@ html(lang='en')
   // syntax                             description   
   //    $var                               state attribute name
   //    .for(list="$var")  =>  $item       loops content yielding $item
+  //    .if(hide="$var" show="$var")  =>  $item   display $item if condition is true
 
   body
     #app
       title $title
-      #todo
-        h2.info TODO
-        div
-          input(type="text", placeholder="new item", id="add-todo")
-          .for(list="$todoList")
-            .todo-item 
-              .content $item
-              .remove-todo x
-      #want
-        h2.info WANTS
-        div
-          input(type="text", placeholder="new item", id="add-want")
-          .for(list="$wantList")
-            .want-item 
-              .content $item
-              .remove-want x
+      .if(show="$showTodo")
+        include view/todo
+      include view/wants

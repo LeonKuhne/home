@@ -8,9 +8,10 @@ function clean {
 
 function compile {
   export_dir=$1
-  pug < src/index.pug > $export_dir/index.html # markdown
+  pug -p src/index.pug < src/index.pug > $export_dir/index.html # markdown
   sass src/styles.scss:$export_dir/styles.css # styles
-  cp src/*.js $export_dir/ # code
+  cp src/*.js $export_dir # code
+  cp src/**/*.js $export_dir # code
 }
 
 function serve {

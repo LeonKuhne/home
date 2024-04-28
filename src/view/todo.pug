@@ -1,0 +1,8 @@
+todo-list#todos(table="todo-list")
+  h2.info TODO
+  div
+    input.add(type="text", placeholder="new item")
+    .for(list="$todo-list")
+      .item 
+        .content $item
+        .remove x

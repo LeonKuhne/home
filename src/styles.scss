@@ -1,43 +1,46 @@
+@use 'prototypes/base';
+
 :root {
   --primary-font-size: 24px;
   --primary-color: #fee;
   --shadow-color: #433;
 }
 
-body {
-  margin: 0;
+/* components */
+
+todo-list {
+  flex: 1;
+  .entry {
+    display: flex;
+    gap: 1rem;
+  }.item {
+    display: flex;
+    .content {
+      flex: 1;
+    } .remove {
+      color: red;
+      display: inline-block;
+      cursor: pointer;
+      user-select: none;
+    }
+  }
 }
 
-body, input {
-  color: var(--primary-color);
-  background: var(--shadow-color);
-  font-size: var(--primary-font-size);
-}
-
-input {
-  border: none;
-  border-bottom: 1px solid var(--primary-color);
-} input:focus {
-  outline: none;
-}
+/* page */
 
 #app {
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
   height: 100vh;
-
+  margin: 0 5rem;
+  gap: 5rem;
 }
 
-.todo-item {
-  display: flex;
-  .content {
-    flex: 1;
-  } .remove-todo {
-    color: red;
-    display: inline-block;
-    cursor: pointer;
-    user-select: none;
+#wants {
+  .name {
+    flex: 2;
+  } .reason {
+    flex: 3;
   }
 }

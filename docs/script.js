@@ -1,27 +1,25 @@
 import './template.js'
 import './db.js'
+import TodoList from './todo-list.js'
 
-const todoTableName = "todo-list"
+document.setState({ title: "Home", showTodo: false })
+customElements.define('todo-list', TodoList)
 
-document.setState({
-  title: "Home",
-  todoList: localStorage.getList(todoTableName)
-})
-
+//
+// Todo Actions
 document.onRender(() => {
-  document.getElementById('add-todo').addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') {
-      const todo = e.target.value
-      const todoList = localStorage.addToList(todoTableName, todo)
-      document.render({ todoList })
-      e.target.value = ""
-    }
-  })
+  // todos
+  const todosElem = document.querySelector('#todos')
+  // aggregate
+  todosElem.collectItem(() => todosElem.read('.add') )
+  todosElem.submitOnEnter('.add')
+  todosElem.removeOnClick('.remove')
 
-  document.querySelectorAll('.remove-todo').forEach((element, index) => {
-    element.addEventListener('click', () => {
-      const todoList = localStorage.removeFromList(todoTableName, index)
-      document.render({ todoList })
-    })
-  })
+  // wants
+  const wantsElem = document.querySelector('#wants')
+  // aggregate
+  wantsElem.collectItem(read => `${read('.score')}| ${read('.name')} → ${read('.reason')}`)
+  wantsElem.submitOnClick('.add')
+  wantsElem.submitOnEnter('.name', '.reason')
+  wantsElem.removeOnClick('.remove')
 })
