@@ -2,7 +2,7 @@ import './template.js'
 import './db.js'
 import TodoList from './todo-list.js'
 
-document.setState({ title: "Home", showTodo: false })
+document.setState({ title: "Home" })
 customElements.define('todo-list', TodoList)
 
 //
