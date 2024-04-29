@@ -1,14 +1,18 @@
+$primary-font-size: 24px;
+$primary-color: #fee;
+$shadow-color: #433;
+
 body { margin: 0; }
 
 body, input {
-  color: var(--primary-color);
-  background: var(--shadow-color);
-  font-size: var(--primary-font-size);
+  color: $primary-color;
+  background: $shadow-color;
+  font-size: $primary-font-size;
 }
 
 input {
   border: none;
-  border-bottom: 1px solid var(--primary-color);
+  border-bottom: 1px solid $primary-color;
   width: 100%;
 } input:focus {
   outline: none;
@@ -17,7 +21,17 @@ input {
 select, button {
   background: transparent;
   border: none;
-  border-bottom: 1px solid var(--primary-color);
+  border-bottom: 1px solid $primary-color;
   color: white;
   cursor: pointer;
+}
+
+/* util (extra) */
+
+.flex, .expand {
+  display: flex;
+} .expand > * {
+  flex: 1;
+} .col {
+  flex-direction: column;
 }

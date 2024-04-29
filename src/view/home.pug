@@ -1,0 +1,12 @@
+todo-list#task-manager
+  div
+    input.add(type="text" placeholder="new task")
+  .expand
+    .task-list 
+      h2 Tasks
+      .for(list="$task-manager")
+        .item
+          .content $item
+          .remove x
+    .calendar Calendar
+  .stats Graphs

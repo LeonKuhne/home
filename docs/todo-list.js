@@ -3,7 +3,7 @@ export default class TodoList extends HTMLElement {
   static registerByDefault = true
 
   connectedCallback() { 
-    this.table = this.getAttribute('table')
+    this.table = this.id
     this.items = localStorage.getList(this.table)
     this.getAddState = () => null
     if (TodoList.registerByDefault) this.register()

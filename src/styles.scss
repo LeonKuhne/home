@@ -1,11 +1,5 @@
 @use 'prototypes/base';
 
-:root {
-  --primary-font-size: 24px;
-  --primary-color: #fee;
-  --shadow-color: #433;
-}
-
 /* components */
 
 todo-list {
@@ -13,7 +7,7 @@ todo-list {
   .entry {
     display: flex;
     gap: 1rem;
-  }.item {
+  } .item {
     display: flex;
     .content {
       flex: 1;
@@ -26,7 +20,7 @@ todo-list {
   }
 }
 
-/* page */
+/* pages */
 
 #app {
   display: flex;
@@ -37,10 +31,22 @@ todo-list {
   gap: 5rem;
 }
 
-#wants {
+/* wants */
+
+#want-list {
   .name {
     flex: 2;
   } .reason {
     flex: 3;
   }
+}
+
+/* home */
+
+.calendar {
+  background: #557;
+}
+
+.stats{
+  background: #575;
 }

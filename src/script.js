@@ -5,21 +5,15 @@ import TodoList from './todo-list.js'
 document.setState({ title: "Home" })
 customElements.define('todo-list', TodoList)
 
-//
-// Todo Actions
-document.onRender(() => {
-  // todos
-  const todosElem = document.querySelector('#todos')
-  // aggregate
-  todosElem.collectItem(() => todosElem.read('.add') )
-  todosElem.submitOnEnter('.add')
-  todosElem.removeOnClick('.remove')
+// todo-list define hooks for collect, submits and remove (optional). for example:
+//  .collectItem(() => taskManager.read('.add'))
+//  .collectItem(read => `${read('.score')}| ${read('.name')} → ${read('.reason')}`)
+//  .submitOnEnter('.name', '.reason')
+//  .removeOnClick('.reason')
 
-  // wants
-  const wantsElem = document.querySelector('#wants')
-  // aggregate
-  wantsElem.collectItem(read => `${read('.score')}| ${read('.name')} → ${read('.reason')}`)
-  wantsElem.submitOnClick('.add')
-  wantsElem.submitOnEnter('.name', '.reason')
-  wantsElem.removeOnClick('.remove')
+document.onRender(() => {
+  const taskManager = document.querySelector('#task-manager')
+  taskManager.collectItem(() => taskManager.read('.add'))
+  taskManager.submitOnEnter('.add')
+  taskManager.removeOnClick('.remove')
 })

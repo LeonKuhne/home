@@ -3,14 +3,14 @@ body {
 }
 
 body, input {
-  color: var(--primary-color);
-  background: var(--shadow-color);
-  font-size: var(--primary-font-size);
+  color: #fee;
+  background: #433;
+  font-size: 24px;
 }
 
 input {
   border: none;
-  border-bottom: 1px solid var(--primary-color);
+  border-bottom: 1px solid #fee;
   width: 100%;
 }
 
@@ -21,15 +21,22 @@ input:focus {
 select, button {
   background: transparent;
   border: none;
-  border-bottom: 1px solid var(--primary-color);
+  border-bottom: 1px solid #fee;
   color: white;
   cursor: pointer;
 }
 
-:root {
-  --primary-font-size: 24px;
-  --primary-color: #fee;
-  --shadow-color: #433;
+/* util (extra) */
+.flex, .expand {
+  display: flex;
+}
+
+.expand > * {
+  flex: 1;
+}
+
+.col {
+  flex-direction: column;
 }
 
 /* components */
@@ -53,7 +60,7 @@ todo-list .item .remove {
   user-select: none;
 }
 
-/* page */
+/* pages */
 #app {
   display: flex;
   align-items: center;
@@ -63,11 +70,21 @@ todo-list .item .remove {
   gap: 5rem;
 }
 
-#wants .name {
+/* wants */
+#want-list .name {
   flex: 2;
 }
-#wants .reason {
+#want-list .reason {
   flex: 3;
+}
+
+/* home */
+.calendar {
+  background: #557;
+}
+
+.stats {
+  background: #575;
 }
 
 /*# sourceMappingURL=styles.css.map */
