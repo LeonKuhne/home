@@ -1,37 +1,16 @@
 @use 'prototypes/base';
 
-/* components */
-
-todo-list {
-  flex: 1;
-  .entry {
-    display: flex;
-    gap: 1rem;
-  } .item {
-    display: flex;
-    .content {
-      flex: 1;
-    } .remove {
-      color: red;
-      display: inline-block;
-      cursor: pointer;
-      user-select: none;
-    }
-  }
+list-entry .remove {
+  color: red;
+  cursor: pointer;
+  user-select: none;
 }
 
-/* pages */
-
-#app {
+#task-manager {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
-  margin: 0 5rem;
-  gap: 5rem;
+  flex-direction: column;
+  gap: 1rem;
 }
-
-/* wants */
 
 #want-list {
   .name {
@@ -42,6 +21,9 @@ todo-list {
 }
 
 /* home */
+.entry .duration {
+  width: 5rem;
+}
 
 .calendar {
   background: #557;

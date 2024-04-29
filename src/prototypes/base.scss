@@ -26,12 +26,40 @@ select, button {
   cursor: pointer;
 }
 
-/* util (extra) */
+/* flex (extra) */
 
 .flex, .expand {
   display: flex;
-} .expand > * {
+} .grow, .expand > * {
   flex: 1;
 } .col {
   flex-direction: column;
+} 
+
+/* center (extra) */
+.center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
+
+/* shortucts (extra) */
+
+@mixin repeat($class, $count, $unit, $props...) {
+  @for $i from 1 through $count {
+    @for $p from 1 through length($props) {
+      $prop: nth($props, $p);
+      .#{$class}-#{$i} {
+        #{$prop}: #{$i}#{$unit};
+      }
+    }
+  }
+}
+
+@include repeat("gap", 10, "rem", "gap");
+@include repeat("pad", 10, "rem", "padding");
+@include repeat("rpad", 10, "rem", "padding-right");
+@include repeat("lpad", 10, "rem", "padding-left");
+@include repeat("hpad", 10, "rem", "padding-left", "padding-right");
+@include repeat("vpad", 10, "rem", "padding-top", "padding-bottom");

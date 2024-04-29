@@ -36,12 +36,25 @@ HTMLElement.prototype.var = function(attribute) { return this.getAttribute(attri
 //
 // Fill Variables
 
-HTMLElement.prototype.fill = function(state, content=null) {
-  Object.keys(state).forEach(key => this.replace(key, state[key], content))
+// replace eg. $var.attr[5] with value, where state[val] exists
+HTMLElement.prototype.fill = function(state) {
+  Object.keys(state).forEach(key => {
+    const value = state[key]
+    this.innerHTML = this.innerHTML.replace(new RegExp(`\\$${key}[^!=\\s|\\<|\\"]*`, 'g'), (match) => {
+      const extension = match.substring(key.length+1)
+      const fillValue = extension ? eval(`value${extension}`) : value
+      console.info("template replace: ", match, fillValue)
+      return fillValue
+    })
+  })
+}
+
+function replaceVariable(content, key, value) {
+  return content.replace(new RegExp("\\$"+key, 'g'), value)
 }
 
 HTMLElement.prototype.replace = function (key, value) {
-  this.innerHTML = this.innerHTML.replace(new RegExp("\\$"+key, 'g'), value)
+  this.innerHTML = replaceVariable(this.innerHTML, key, value)
 }
 
 //
@@ -58,9 +71,9 @@ HTMLElement.prototype.iterate = function(state) {
     const items = state[varName]
     const children = element.children
     let html = ""
-    for (let item of items) {
+    for (let i=0; i<items.length; i++) {
       for (let child of children) {
-        html += child.outerHTML.replace('\$item', item)
+        html += replaceVariable(child.outerHTML, "item", '$'+varName+'['+i+']')
       }
     }
     element.innerHTML = html

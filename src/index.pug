@@ -8,11 +8,14 @@ html(lang='en')
     script(type="module", src="script.js")
 
   // syntax                             description   
-  //    $var                               state attribute name
+  //    $var                               state attribute 
+  //    $var[5].attr                       state attribute property
   //    .for(list="$var")  =>  $item       loops content yielding $item
   //    .if(hide="$var" show="$var")  =>  $item   display $item if condition is true
 
   body
-    #app
+    #app.flex.gap-5.center
       title $title
+      //include view/todo
       include view/home
+      //include view/wants

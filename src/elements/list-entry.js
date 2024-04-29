@@ -1,21 +1,17 @@
-export default class TodoList extends HTMLElement {
-  constructor() { super() }
-  static registerByDefault = true
+import Component from './component.js'
 
-  connectedCallback() { 
-    this.table = this.id
-    this.items = localStorage.getList(this.table)
-    this.getAddState = () => null
-    if (TodoList.registerByDefault) this.register()
+export default class ListEntry extends Component {
+
+  constructor() {
+    super(() => 'todo-list', false)
+    this.table = 'todo-list'
+    this.getData = () => this.items
   }
 
-  disconnectCallback() { if (TodoList.registerByDefault) this.unregister() } 
-
-  //
-  // Register (with document template)
-
-  register() { document.addState({ [this.table]: this.items }) }
-  unregister() { document.removeState(this.table) }
+  onLoad() { 
+    this.items = localStorage.getList(this.table)
+    this.getAddState = () => null
+  }
 
   //
   // Actions
@@ -51,13 +47,11 @@ export default class TodoList extends HTMLElement {
 
   add(item) {
     this.items = localStorage.addToList(this.table, item)
-    // TODO use this.render instead
-    document.render({ [this.table]: this.items })
+    this.render()
   }
 
   remove(index) {
     this.items = localStorage.removeFromList(this.table, index)
-    // TODO use this.render instead
-    document.render({ [this.table]: this.items })
+    this.render()
   }
 }

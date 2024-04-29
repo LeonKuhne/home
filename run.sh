@@ -21,54 +21,26 @@ function build {
 
 function serve {
   export_dir=$1
-  (
-    cd $export_dir
-    python -m http.server 8000
-  )
-}
-
-function serve-bg {
-  export_dir=$1
-  script=$(readlink -f $0)
-  nohup $script serve > /dev/null 2>&1 &
-  echo $!
-}
-
-function start {
-  export_dir=$1
-  build $export_dir
-  pid=$(serve-bg $export_dir)
-  echo "serving $pid"
-  trap "stop $pid" EXIT SIGTERM SIGINT
-}
-
-function stop {
-  pid=$1
-  echo "killing $pid"
-  kill $pid
+  nohup python -m http.server 8000 -d $export_dir > /dev/null 2>&1 &
+  pid=$!
+  trap "kill $pid" EXIT SIGTERM SIGINT
+  echo "serving $pid on http://localhost:8000"
 }
 
 function hotreload {
   export_dir=$1
-  start $export_dir
+  serve $export_dir
+  build $export_dir
   waitforchanges $export_dir
 }
 
 function waitforchanges {
   export_dir=$1
-  inotifywait -r -e modify,move,create,delete src | 
-    while read dir action file; do
-      echo "Detected change, reloading service... $dir, $action, $file"
-      build $export_dir
-    done
-  waitforchanges $@
+  build $export_dir
+  code=$(inotifywait -r -e modify,move,create,delete src | 
+    while read; do echo "continue"; done
+  )
+  if [ "$code" == "continue" ]; then waitforchanges $@; fi
 }
 
-function run {
-  echo "running with $1"
-  export_dir="docs"
-  if [ "$1" == "serve" ]; then serve "$export_dir";
-  else hotreload $export_dir; fi
-}
-
-run $@
+hotreload "docs"

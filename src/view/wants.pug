@@ -1,7 +1,7 @@
-todo-list#want-list
+list-entry#want-list
   h2.info WANTS
   div
-    div.entry
+    .flex
       input.name(type="text", placeholder="description")
       select.score
         option(value="0") None
@@ -18,6 +18,6 @@ todo-list#want-list
       input.reason(type="text", placeholder="reason why")
       button.add submit
     .for(list="$want-list")
-      .item 
-        .content $item
+      .flex 
+        .content.grow $item
         .remove x

@@ -1,12 +1,14 @@
-todo-list#task-manager
-  div
-    input.add(type="text" placeholder="new task")
-  .expand
+list-entry#task-manager
+  .entry.flex
+    input.name.grow(type="text" placeholder="new task")
+    input.duration(type="number" placeholder="mins" title="duration" step="15" min="0" max="120")
+  .expand.gap-1
     .task-list 
       h2 Tasks
       .for(list="$task-manager")
-        .item
-          .content $item
+        .item.flex.gap-1
+          .name.grow $item.name
+          .duration $item.duration
           .remove x
     .calendar Calendar
   .stats Graphs
