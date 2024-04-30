@@ -3,7 +3,7 @@ var completeState = {}
 const renderCallbacks = []
 
 //
-// State
+// State - TODO use a class instance for state
 
 Document.prototype.setState = function(state) { completeState = state }
 Document.prototype.addState = function(state) { completeState = { ...completeState, ...state } }
@@ -31,7 +31,11 @@ HTMLElement.prototype.show = function(value) { if (!value) this.style.display = 
 //
 // Variables
 
-HTMLElement.prototype.var = function(attribute) { return this.getAttribute(attribute)?.substring(1) }
+HTMLElement.prototype.var = function(attribute) { 
+  const value = this.getAttribute(attribute)
+  if (!value || !value.startsWith('$')) return null
+  return value.substring(1) 
+}
 
 //
 // Fill Variables
@@ -83,11 +87,24 @@ HTMLElement.prototype.iterate = function(state) {
 //
 // Check Variables
 
+HTMLElement.prototype.equalsValue = function(state) {
+  const equalsVar = this.var("equals")
+  if (state.hasOwnProperty(equalsVar)) return state[equalsVar]
+  return this.getAttribute("equals")
+}
+
 HTMLElement.prototype.setVisibleOnAttribute = function(state, query, valueMeansVisible=true) {
   const varName = this.var(query)
-  if (!varName || !state.hasOwnProperty(varName)) return false;
-  if (state[varName] == valueMeansVisible) this.show()
-  else this.hide()
+  if (!varName || !state.hasOwnProperty(varName)) return false
+  const elseElem = this.nextElementSibling?.classList.contains('else') ? this.nextElementSibling : null
+  if (this.hasAttribute("equals")) valueMeansVisible = this.equalsValue(state)
+  if (state[varName] == valueMeansVisible) {
+    this.show()
+    elseElem?.hide()
+  } else {
+    this.hide()
+    elseElem?.show()
+  }
   return true
 }
 HTMLElement.prototype.applyShow = function(state) { return this.setVisibleOnAttribute(state, "show", true) }

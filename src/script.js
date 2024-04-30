@@ -2,29 +2,50 @@ import './template.js'
 import './db.js'
 import ListEntry from './list-entry.js'
 
-document.setState({ title: "Home" })
+// register elements
+// TODO move this within component (use static call)
 customElements.define('list-entry', ListEntry)
 
-// todo-list define hooks for collect, submits and remove (optional). for example:
+// todo-list hooks
 //  .collectItem(read => read('.add'))
 //  .collectItem(read => `${read('.score')}| ${read('.name')} → ${read('.reason')}`)
-//  .submitOnEnter('.name', '.reason')
+//  .submitOnEnter('.name', '.reason', '.add')
 //  .removeOnClick('.reason')
 
-document.onRender(() => {
-  const taskManager = document.querySelector('#task-manager')
-  taskManager.collectItem(read => ({ 
-    name: read('.name'),
-    duration: read('.duration')
-  }))
-  taskManager.submitOnEnter('.name')
-  taskManager.submitOnEnter('.duration')
-  taskManager.removeOnClick('.remove')
+//
+// Read URL
+const params = new URLSearchParams(window.location.search)
+switch (params.get('page')) {
 
-  /*
-  const todoList = document.querySelector('#todo-list')
-  todoList.collectItem(read => read('.add'))
-  todoList.submitOnEnter('.add')
-  todoList.removeOnClick('.remove')
-  */
-})
+  //
+  // Todo Page
+
+  case 'todo':
+    document.setState({ title: "Todo" })
+    document.onRender(() => {
+      const todoList = document.querySelector('#todo-list')
+      todoList.collectItem(read => read('.add'))
+      todoList.submitOnEnter('.add')
+      todoList.removeOnClick('.remove')
+    })
+    break;
+
+  //
+  // Task Manager
+
+  default:
+    document.setState({ 
+      title: "Home",
+      hours: Array.from({ length: 24 }, (_, i) => new Date(0, 0, 0, i).toLocaleTimeString('en-US', { hour: 'numeric', hour12: true }))
+    })
+    document.onRender(() => {
+      const taskManager = document.querySelector('#task-manager')
+      taskManager.collectItem(read => ({ 
+        name: read('.name'),
+        duration: read('.duration')
+      }))
+      taskManager.submitOnEnter('.name')
+      taskManager.submitOnEnter('.duration')
+      taskManager.removeOnClick('.remove')
+    })
+}

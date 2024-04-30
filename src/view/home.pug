@@ -1,4 +1,4 @@
-list-entry#task-manager
+list-entry#task-manager.pad-5
   .entry.flex
     input.name.grow(type="text" placeholder="new task")
     input.duration(type="number" placeholder="mins" title="duration" step="15" min="0" max="120")
@@ -10,5 +10,7 @@ list-entry#task-manager
           .name.grow $item.name
           .duration $item.duration
           .remove x
-    .calendar Calendar
+    .calendar 
+      .for(list="$hours")
+        .hour $item
   .stats Graphs

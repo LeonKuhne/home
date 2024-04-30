@@ -1,21 +1,19 @@
 doctype html
 html(lang='en')
-
-  head
-    meta(charset='UTF-8')
-    link(rel='icon', href='data:,')
-    link(rel="stylesheet" href="styles.css")
-    script(type="module", src="script.js")
+  include view/head
 
   // syntax                             description   
   //    $var                               state attribute 
   //    $var[5].attr                       state attribute property
   //    .for(list="$var")  =>  $item       loops content yielding $item
   //    .if(hide="$var" show="$var")  =>  $item   display $item if condition is true
+  // notes
+  //    focus is lost on elements without an id on rerender, provide an id or use js to keep focus
 
   body
-    #app.flex.gap-5.center
-      title $title
-      //include view/todo
+    title $title
+    .if(show="$title" equals='Todo')
+      include view/todo
+    .else
       include view/home
-      //include view/wants
+    //include view/wants
