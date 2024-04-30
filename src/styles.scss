@@ -1,46 +1,40 @@
 @use 'prototypes/base';
 
-:root {
-  --primary-font-size: 24px;
-  --primary-color: #fee;
-  --shadow-color: #433;
+list-entry .remove {
+  color: red;
+  cursor: pointer;
+  user-select: none;
 }
 
-/* components */
-
-todo-list {
-  flex: 1;
-  .entry {
-    display: flex;
-    gap: 1rem;
-  }.item {
-    display: flex;
-    .content {
-      flex: 1;
-    } .remove {
-      color: red;
-      display: inline-block;
-      cursor: pointer;
-      user-select: none;
-    }
-  }
-}
-
-/* page */
-
-#app {
+#task-manager {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
-  margin: 0 5rem;
-  gap: 5rem;
+  flex-direction: column;
 }
 
-#wants {
+#want-list {
   .name {
     flex: 2;
   } .reason {
     flex: 3;
   }
+}
+
+/* home */
+.entry .duration {
+  width: 5rem;
+}
+
+.calendar {
+  background: #557;
+  overflow-y: scroll;
+  height: 27rem;
+  .hour {
+    text-align: right;
+    color: rgba($color: #000000, $alpha: 0.5);
+    user-select: none;
+  }
+}
+
+.stats{
+  background: #575;
 }

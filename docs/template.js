@@ -3,7 +3,7 @@ var completeState = {}
 const renderCallbacks = []
 
 //
-// State
+// State - TODO use a class instance for state
 
 Document.prototype.setState = function(state) { completeState = state }
 Document.prototype.addState = function(state) { completeState = { ...completeState, ...state } }
@@ -31,17 +31,34 @@ HTMLElement.prototype.show = function(value) { if (!value) this.style.display = 
 //
 // Variables
 
-HTMLElement.prototype.var = function(attribute) { return this.getAttribute(attribute)?.substring(1) }
+HTMLElement.prototype.var = function(attribute) { 
+  const value = this.getAttribute(attribute)
+  if (!value || !value.startsWith('$')) return null
+  return value.substring(1) 
+}
 
 //
 // Fill Variables
 
-HTMLElement.prototype.fill = function(state, content=null) {
-  Object.keys(state).forEach(key => this.replace(key, state[key], content))
+// replace eg. $var.attr[5] with value, where state[val] exists
+HTMLElement.prototype.fill = function(state) {
+  Object.keys(state).forEach(key => {
+    const value = state[key]
+    this.innerHTML = this.innerHTML.replace(new RegExp(`\\$${key}[^!=\\s|\\<|\\"]*`, 'g'), (match) => {
+      const extension = match.substring(key.length+1)
+      const fillValue = extension ? eval(`value${extension}`) : value
+      console.info("template replace: ", match, fillValue)
+      return fillValue
+    })
+  })
+}
+
+function replaceVariable(content, key, value) {
+  return content.replace(new RegExp("\\$"+key, 'g'), value)
 }
 
 HTMLElement.prototype.replace = function (key, value) {
-  this.innerHTML = this.innerHTML.replace(new RegExp("\\$"+key, 'g'), value)
+  this.innerHTML = replaceVariable(this.innerHTML, key, value)
 }
 
 //
@@ -58,9 +75,9 @@ HTMLElement.prototype.iterate = function(state) {
     const items = state[varName]
     const children = element.children
     let html = ""
-    for (let item of items) {
+    for (let i=0; i<items.length; i++) {
       for (let child of children) {
-        html += child.outerHTML.replace('\$item', item)
+        html += replaceVariable(child.outerHTML, "item", '$'+varName+'['+i+']')
       }
     }
     element.innerHTML = html
@@ -70,11 +87,24 @@ HTMLElement.prototype.iterate = function(state) {
 //
 // Check Variables
 
+HTMLElement.prototype.equalsValue = function(state) {
+  const equalsVar = this.var("equals")
+  if (state.hasOwnProperty(equalsVar)) return state[equalsVar]
+  return this.getAttribute("equals")
+}
+
 HTMLElement.prototype.setVisibleOnAttribute = function(state, query, valueMeansVisible=true) {
   const varName = this.var(query)
-  if (!varName || !state.hasOwnProperty(varName)) return false;
-  if (state[varName] == valueMeansVisible) this.show()
-  else this.hide()
+  if (!varName || !state.hasOwnProperty(varName)) return false
+  const elseElem = this.nextElementSibling?.classList.contains('else') ? this.nextElementSibling : null
+  if (this.hasAttribute("equals")) valueMeansVisible = this.equalsValue(state)
+  if (state[varName] == valueMeansVisible) {
+    this.show()
+    elseElem?.hide()
+  } else {
+    this.hide()
+    elseElem?.show()
+  }
   return true
 }
 HTMLElement.prototype.applyShow = function(state) { return this.setVisibleOnAttribute(state, "show", true) }

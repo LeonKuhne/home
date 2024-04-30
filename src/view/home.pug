@@ -1,0 +1,16 @@
+list-entry#task-manager.pad-5
+  .entry.flex
+    input.name.grow(type="text" placeholder="new task")
+    input.duration(type="number" placeholder="mins" title="duration" step="15" min="0" max="120")
+  .expand.gap-1
+    .task-list 
+      h2 Tasks
+      .for(list="$task-manager")
+        .item.flex.gap-1
+          .name.grow $item.name
+          .duration $item.duration
+          .remove x
+    .calendar 
+      .for(list="$hours")
+        .hour.rpad-1 $item
+  .stats Graphs

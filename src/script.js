@@ -1,25 +1,51 @@
 import './template.js'
 import './db.js'
-import TodoList from './todo-list.js'
+import ListEntry from './list-entry.js'
 
-document.setState({ title: "Home" })
-customElements.define('todo-list', TodoList)
+// register elements
+// TODO move this within component (use static call)
+customElements.define('list-entry', ListEntry)
+
+// todo-list hooks
+//  .collectItem(read => read('.add'))
+//  .collectItem(read => `${read('.score')}| ${read('.name')} → ${read('.reason')}`)
+//  .submitOnEnter('.name', '.reason', '.add')
+//  .removeOnClick('.reason')
 
 //
-// Todo Actions
-document.onRender(() => {
-  // todos
-  const todosElem = document.querySelector('#todos')
-  // aggregate
-  todosElem.collectItem(() => todosElem.read('.add') )
-  todosElem.submitOnEnter('.add')
-  todosElem.removeOnClick('.remove')
+// Read URL
+const params = new URLSearchParams(window.location.search)
+switch (params.get('page')) {
 
-  // wants
-  const wantsElem = document.querySelector('#wants')
-  // aggregate
-  wantsElem.collectItem(read => `${read('.score')}| ${read('.name')} → ${read('.reason')}`)
-  wantsElem.submitOnClick('.add')
-  wantsElem.submitOnEnter('.name', '.reason')
-  wantsElem.removeOnClick('.remove')
-})
+  //
+  // Todo Page
+
+  case 'todo':
+    document.setState({ title: "Todo" })
+    document.onRender(() => {
+      const todoList = document.querySelector('#todo-list')
+      todoList.collectItem(read => read('.add'))
+      todoList.submitOnEnter('.add')
+      todoList.removeOnClick('.remove')
+    })
+    break;
+
+  //
+  // Task Manager
+
+  default:
+    document.setState({ 
+      title: "Home",
+      hours: Array.from({ length: 24 }, (_, i) => new Date(0, 0, 0, i).toLocaleTimeString('en-US', { hour: 'numeric', hour12: true }))
+    })
+    document.onRender(() => {
+      const taskManager = document.querySelector('#task-manager')
+      taskManager.collectItem(read => ({ 
+        name: read('.name'),
+        duration: read('.duration')
+      }))
+      taskManager.submitOnEnter('.name')
+      taskManager.submitOnEnter('.duration')
+      taskManager.removeOnClick('.remove')
+    })
+}

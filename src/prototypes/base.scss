@@ -1,14 +1,22 @@
-body { margin: 0; }
+$primary-font-size: 24px;
+$primary-color: #fee;
+$shadow-color: #433;
+
+body { 
+  margin: 0; 
+  width: 100%;
+  height: 100%;
+}
 
 body, input {
-  color: var(--primary-color);
-  background: var(--shadow-color);
-  font-size: var(--primary-font-size);
+  color: $primary-color;
+  background: $shadow-color;
+  font-size: $primary-font-size;
 }
 
 input {
   border: none;
-  border-bottom: 1px solid var(--primary-color);
+  border-bottom: 1px solid $primary-color;
   width: 100%;
 } input:focus {
   outline: none;
@@ -17,7 +25,46 @@ input {
 select, button {
   background: transparent;
   border: none;
-  border-bottom: 1px solid var(--primary-color);
+  border-bottom: 1px solid $primary-color;
   color: white;
   cursor: pointer;
 }
+
+/* flex (extra) */
+
+.flex, .expand {
+  display: flex;
+} .grow, .expand > * {
+  flex: 1;
+} .col {
+  flex-direction: column;
+} 
+
+/* center (extra) */
+.center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* shortucts (extra) */
+
+@mixin repeat($class, $count, $unit, $props...) {
+  @for $i from 1 through $count {
+    @for $p from 1 through length($props) {
+      $prop: nth($props, $p);
+      .#{$class}-#{$i} {
+        #{$prop}: #{$i}#{$unit};
+      }
+    }
+  }
+}
+
+@include repeat("gap", 10, "rem", "gap");
+@include repeat("pad", 10, "rem", "padding");
+@include repeat("rpad", 10, "rem", "padding-right");
+@include repeat("lpad", 10, "rem", "padding-left");
+@include repeat("hpad", 10, "rem", "padding-left", "padding-right");
+@include repeat("vpad", 10, "rem", "padding-top", "padding-bottom");
+@include repeat("grow", 10, "", "flex");
