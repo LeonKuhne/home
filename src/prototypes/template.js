@@ -16,10 +16,12 @@ document.addEventListener('DOMContentLoaded', () => document.render())
 
 Document.prototype.render = function(state = {}) {
   completeState = { ...completeState, ...state }
+  const focusedElementId = document.activeElement?.id
   document.body.innerHTML = bodyTemplate
   document.body.iterate(completeState)
   document.body.check(completeState)
   document.body.fill(completeState)
+  if (focusedElementId) document.getElementById(focusedElementId)?.focus()
   for (let callback of renderCallbacks) callback()
 }
 

@@ -1,15 +1,14 @@
 import Component from './component.js'
 
 export default class ListEntry extends Component {
-
-  constructor() {
-    super(() => 'todo-list', false)
-    this.table = 'todo-list'
-    this.getData = () => this.items
+  constructor() { 
+    super() 
+    this.getState = () => this.items
   }
 
-  onLoad() { 
-    this.items = localStorage.getList(this.table)
+  loadState() { 
+    this.table = this.key
+    this.items = localStorage.getList(this.table) || []
     this.getAddState = () => null
   }
 

@@ -1,7 +1,7 @@
 list-entry#task-manager.pad-5
   .entry.flex
-    input.name.grow(type="text" placeholder="new task")
-    input.duration(type="number" placeholder="mins" title="duration" step="15" min="0" max="120")
+    input#task-name.grow(type="text" placeholder="new task")
+    input.duration(type="number" placeholder="mins" title="duration" step="15" min="0" max="120" value="30")
   .expand.gap-1
     .task-list 
       h2 Tasks

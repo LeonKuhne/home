@@ -6,7 +6,7 @@ import ListEntry from './list-entry.js'
 // TODO move this within component (use static call)
 customElements.define('list-entry', ListEntry)
 
-// todo-list hooks
+// list-entry hooks
 //  .collectItem(read => read('.add'))
 //  .collectItem(read => `${read('.score')}| ${read('.name')} → ${read('.reason')}`)
 //  .submitOnEnter('.name', '.reason', '.add')
@@ -41,11 +41,11 @@ switch (params.get('page')) {
     document.onRender(() => {
       const taskManager = document.querySelector('#task-manager')
       taskManager.collectItem(read => ({ 
-        name: read('.name'),
-        duration: read('.duration')
+        name: read('#task-name'),
+        duration: read('input.duration')
       }))
-      taskManager.submitOnEnter('.name')
-      taskManager.submitOnEnter('.duration')
+      taskManager.submitOnEnter('#task-name')
+      taskManager.submitOnEnter('input.duration')
       taskManager.removeOnClick('.remove')
     })
 }

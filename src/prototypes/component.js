@@ -1,5 +1,5 @@
 export default class Component extends HTMLElement {
-  static requiredProperties = ['id', 'getData', 'onLoad']
+  static requiredProperties = ['id', 'getState', 'loadState']
 
   constructor(registerWithTemplate=true) { 
     super() 
@@ -9,14 +9,14 @@ export default class Component extends HTMLElement {
   connectedCallback() { 
     this.requireProperties()
     this.key = this.id
-    this.onLoad()
+    this.loadState()
     if (this.registerWithTemplate) this.register()
   }
 
   disconnectCallback() { if (this.registerWithTemplate) this.unregister() } 
 
   // update state and redraw
-  render() { document.render({ [this.table]: this.getData() }) }
+  render() { document.render({ [this.table]: this.getState() }) }
 
   requireProperties() { 
     const missing = []
@@ -31,6 +31,6 @@ export default class Component extends HTMLElement {
   //
   // Register (with document template)
 
-  register() { document.addState({ [this.key]: this.getData() }) }
+  register() { document.addState({ [this.key]: this.getState() }) }
   unregister() { document.removeState(this.key) }
 }

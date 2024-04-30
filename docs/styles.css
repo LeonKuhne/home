@@ -421,14 +421,6 @@ list-entry .remove {
   flex-direction: column;
 }
 
-#want-list .name {
-  flex: 2;
-}
-#want-list .reason {
-  flex: 3;
-}
-
-/* home */
 .entry .duration {
   width: 5rem;
 }
