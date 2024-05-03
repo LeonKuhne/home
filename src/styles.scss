@@ -19,10 +19,22 @@ list-entry .remove {
   background: #557;
   overflow-y: scroll;
   height: 27rem;
-  .hour {
-    text-align: right;
-    color: rgba($color: #000000, $alpha: 0.5);
-    user-select: none;
+  position: relative;
+  .schedule {
+    position: absolute;
+    width: 100%;
+    top: 0;
+    .timeslot {
+      width: 100%;
+      .event {
+        min-width: max-content;
+      } .hour-marker {
+        display: block;
+        width: 100%;
+        text-align: right;
+        color: rgba($color: #000000, $alpha: 0.5);
+      }
+    }
   }
 }
 

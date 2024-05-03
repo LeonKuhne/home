@@ -1,10 +1,13 @@
+import './util.js'
 import './template.js'
 import './db.js'
 import ListEntry from './list-entry.js'
+import Task from './task.js'
+import QuarterHour from './quarter-hour.js'
 
-// register elements
-// TODO move this within component (use static call)
+// custom elements
 customElements.define('list-entry', ListEntry)
+customElements.define('quarter-hour', QuarterHour)
 
 // list-entry hooks
 //  .collectItem(read => read('.add'))
@@ -22,7 +25,7 @@ switch (params.get('page')) {
 
   case 'todo':
     document.setState({ title: "Todo" })
-    document.onRender(() => {
+    document.onRender(_ => {
       const todoList = document.querySelector('#todo-list')
       todoList.collectItem(read => read('.add'))
       todoList.submitOnEnter('.add')
@@ -36,16 +39,33 @@ switch (params.get('page')) {
   default:
     document.setState({ 
       title: "Home",
-      hours: Array.from({ length: 24 }, (_, i) => new Date(0, 0, 0, i).toLocaleTimeString('en-US', { hour: 'numeric', hour12: true }))
+      schedule: QuarterHour.quarteredDay()
     })
-    document.onRender(() => {
+
+    document.onRender(state => {
+      // task-manager interactions
       const taskManager = document.querySelector('#task-manager')
-      taskManager.collectItem(read => ({ 
-        name: read('#task-name'),
-        duration: read('input.duration')
-      }))
+      taskManager.collectItem(read => {
+        const name = read('#task-name')
+        return new Task(name, {
+          id: new String(name.hashCode()),
+          createdAt: new Date().toISOString(),
+          duration: read('input.duration'),
+        })
+      })
       taskManager.submitOnEnter('#task-name')
       taskManager.submitOnEnter('input.duration')
       taskManager.removeOnClick('.remove')
+
+      // calendar interactions
+      taskManager.querySelectorAll('.item').forEach(item => {
+        item.addEventListener('dragstart', e => e.dataTransfer.setData('text/plain', e.target.id))
+      })
+      taskManager.querySelectorAll('.hour-marker').forEach(quarterHour => quarterHour.onDropTask = (taskId) => {
+        const task = state['task-manager'].find(task => task.id === taskId)
+        console.log('drop', taskId)
+        const timeslot = quarterHour.getTimeslot(state)
+        timeslot.assign(task, parseInt(task.duration))
+      })
     })
 }

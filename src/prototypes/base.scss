@@ -41,11 +41,19 @@ select, button {
 } 
 
 /* center (extra) */
+
 .center {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+}
+
+/* noselect (extra) */
+
+.noselect {
+  user-select: none;
+  cursor: grab;
 }
 
 /* shortucts (extra) */
@@ -61,10 +69,18 @@ select, button {
   }
 }
 
+// spacing
 @include repeat("gap", 10, "rem", "gap");
+@include repeat("grow", 10, "", "flex");
+// padding
 @include repeat("pad", 10, "rem", "padding");
 @include repeat("rpad", 10, "rem", "padding-right");
 @include repeat("lpad", 10, "rem", "padding-left");
 @include repeat("hpad", 10, "rem", "padding-left", "padding-right");
 @include repeat("vpad", 10, "rem", "padding-top", "padding-bottom");
-@include repeat("grow", 10, "", "flex");
+// margin
+@include repeat("mar", 10, "rem", "margin");
+@include repeat("rmar", 10, "rem", "margin-right");
+@include repeat("lmar", 10, "rem", "margin-left");
+@include repeat("vmar", 10, "rem", "margin-top", "margin-bottom");
+@include repeat("hmar", 10, "rem", "margin-left", "margin-right");

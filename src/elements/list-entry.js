@@ -3,13 +3,12 @@ import Component from './component.js'
 export default class ListEntry extends Component {
   constructor() { 
     super() 
-    this.getState = () => this.items
   }
 
   loadState() { 
-    this.table = this.key
-    this.items = localStorage.getList(this.table) || []
+    this.items = localStorage.getList(this.id) || []
     this.getAddState = () => null
+    return this.items
   }
 
   //
@@ -45,12 +44,12 @@ export default class ListEntry extends Component {
   // Update List 
 
   add(item) {
-    this.items = localStorage.addToList(this.table, item)
+    this.items = localStorage.addToList(this.id, item)
     this.render()
   }
 
   remove(index) {
-    this.items = localStorage.removeFromList(this.table, index)
+    this.items = localStorage.removeFromList(this.id, index)
     this.render()
   }
 }

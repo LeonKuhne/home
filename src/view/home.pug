@@ -6,11 +6,13 @@ list-entry#task-manager.pad-5
     .task-list 
       h2 Tasks
       .for(list="$task-manager")
-        .item.flex.gap-1
+        .item.flex.gap-1.noselect(draggable="true" id="$item.id")
           .name.grow $item.name
           .duration $item.duration
           .remove x
     .calendar 
-      .for(list="$hours")
-        .hour.rpad-1 $item
+      .for.day.schedule(list="$schedule")
+        .timeslot.flex
+          .if.event.expand.lpad-1(show="$item.task") $item.task.name
+          quarter-hour.hour-marker.rpad-1(id="$item.timestr" hour="$item.hour" quarter="$item.quarter") $item.timestr
   .stats Graphs
