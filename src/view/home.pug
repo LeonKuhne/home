@@ -1,23 +1,25 @@
 .abs.fill.expand
   list-entry#task-manager.flex.pad-5
-    .entry.flex
-      input#task-name.grow(type="text" placeholder="new task")
-      input.duration(type="number" placeholder="mins" title="duration" step="15" min="0" max="120" value="30")
     .expand.grow.gap-1
       .task-list 
+        .entry.flex.gap-1
+          input#task-name.grow(type="text" placeholder="new task")
+          input.duration(type="number" placeholder="mins" title="duration" step="15" min="0" max="120" value="30")
         h2 Tasks
-        .for(list="$task-manager")
+        .for(list="$task-manager.items")
           .item.flex.gap-1.noselect(draggable="true" id="$item.id")
             .name.grow $item.name
             .duration $item.duration
             .remove x
-      list-entry#calendar 
-        .rel
-          .for.day.schedule.abs(list="$calendar")
-            quarter-hour.timeslot.flex.gap-1(id="$item.timestr" hour="$item.hour" quarter="$item.quarter") 
-              .if.event.grow.flex.lmar-1.gap-1(show="$item.task") 
-                .remove x
-                div $item.task.name
-              .rpad-1.shrink.hour-marker $item.timestr
+      .flex.col
+        input.scale(type="range" min="8" max="48" step="0" value="20")
+        list-entry#calendar.container.grow
+          .rel
+            .for.day.schedule.abs(list="$calendar.items")
+              quarter-hour.timeslot.flex.gap-1(id="$item.timestr" hour="$item.hour" quarter="$item.quarter") 
+                .if.event.grow.flex.lmar-1.gap-1(show="$item.task") 
+                  .remove x
+                  div $item.task.name
+                .rpad-1.shrink.hour-marker $item.timestr
     .rel
       .stats.abs Graphs

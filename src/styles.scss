@@ -16,21 +16,23 @@ list-entry .remove {
   height: 100%;
 }
 
-.entry .duration {
-  width: 5rem;
+.entry {
+  .duration {
+    width: 5rem;
+  }
 }
 
 #calendar {
-  background: #557;
   overflow-y: scroll;
-  max-height: 100vh;
+  height: 100%;
   .schedule {
+    background: #557;
     width: 100%;
     top: 0;
     .timeslot:not([quarter="0"]) .hour-marker {
       font-size: small;
     } .timeslot.now {
-      background: red;
+      background: #756
     } .timeslot {
       width: 100%;
       white-space: nowrap;

@@ -695,11 +695,11 @@ list-entry .remove {
 }
 
 #calendar {
-  background: #557;
   overflow-y: scroll;
-  max-height: 100vh;
+  height: 100%;
 }
 #calendar .schedule {
+  background: #557;
   width: 100%;
   top: 0;
 }
@@ -707,7 +707,7 @@ list-entry .remove {
   font-size: small;
 }
 #calendar .schedule .timeslot.now {
-  background: red;
+  background: #756;
 }
 #calendar .schedule .timeslot {
   width: 100%;

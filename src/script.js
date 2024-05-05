@@ -1,22 +1,16 @@
 import './util.js'
 import './template.js'
-import './db.js'
 import ListEntry from './list-entry.js'
 import Task from './task.js'
 import QuarterHour from './quarter-hour.js'
 import Timeslot from './timeslot.js'
+import App from './app.js'
 
 const taskManagerId = 'task-manager'
 const scheduleId = 'calendar'
 
-// create schedule if none saved
-if (localStorage.getItem(scheduleId) === null) {
-  localStorage.setItem(scheduleId, JSON.stringify(QuarterHour.quarteredDay()))
-}
-
-// define custom elements
-customElements.define('list-entry', ListEntry)
-customElements.define('quarter-hour', QuarterHour)
+const app = new App('#app')
+app.define('list-entry', ListEntry)
 
 //
 // Read URL
@@ -27,8 +21,8 @@ switch (params.get('page')) {
   // Todo Page
 
   case 'todo':
-    document.setState({ title: "Todo" })
-    document.onRender(_ => {
+    app.state.title = "Todo"
+    app.onRender(_ => {
       const todoList = document.querySelector('#todo-list')
       todoList.collectItem(read => read('.add'))
       todoList.submitOnEnter('.add')
@@ -41,16 +35,17 @@ switch (params.get('page')) {
 
   default:
 
-    document.setState({ 
-      title: "Home",
+    app.state.title = "Home"
+    app.define('quarter-hour', QuarterHour)
+    app.missingState({
+      [scheduleId]: { scrollTop: 0, items: QuarterHour.quarteredDay() },
     })
 
-    function updateTime() {
-      const currentTime = Timeslot.now() 
-      document.getElementById(currentTime.timestr).classList.add('now')
-    }
+    // TODO
+    // save scale slider
+    // get rid of state queries (check if unused)
 
-    document.onRender(state => {
+    app.onRender(state => {
       const taskManager = document.getElementById(taskManagerId)
       const schedule = document.getElementById(scheduleId)
 
@@ -69,20 +64,22 @@ switch (params.get('page')) {
 
       // schedule interactions
       schedule.onClick((e, _) => {
-        const timeslot = e.target.closest('.timeslot').timeslot
-        const idx = state[scheduleId].findIndex(slot => Timeslot.equals(timeslot, slot))
+        const timeslot = e.target.closest('.timeslot').state
+        const idx = state[scheduleId].items.findIndex(slot => Timeslot.equals(timeslot, slot))
         schedule.update(idx, new Timeslot(timeslot.hour, timeslot.quarter))
       }, '.timeslot .remove')
 
       // schedule drag interactions
       taskManager.querySelectorAll('.item').forEach(item => {
-        item.addEventListener('dragstart', e => e.dataTransfer.setData('text/plain', e.target.id))
+        item.addEventListener('dragstart', e => {
+          e.dataTransfer.setData('text/plain', e.target.id)
+        })
       })
       taskManager.querySelectorAll('.timeslot').forEach(quarterHour => quarterHour.onDropTask = (taskId) => {
-        const task = state[taskManagerId].find(task => task.id === taskId)
+        const task = state[taskManagerId].items.find(task => task.id == taskId)
         console.log('drop', taskId)
-        for (let i = 0; i < state[scheduleId].length; i++) {
-          const timeslot = state[scheduleId][i]
+        for (let i = 0; i < state[scheduleId].items.length; i++) {
+          const timeslot = state[scheduleId].items[i]
           if (quarterHour.equalsTimeslot(timeslot)) {
             timeslot.task = task
             timeslot.duration = parseInt(task.duration)
@@ -92,9 +89,19 @@ switch (params.get('page')) {
         }
       })
 
-      // load save schedule scroll position
-      const scrollId = 'scrollPosition'
-      schedule.scrollTop = localStorage.getItem(scrollId) ?? 0
-      schedule.addEventListener('scroll', e => localStorage.setItem(scrollId, e.target.scrollTop))
+      // scale calendar elements
+      const scheduleScale = taskManager.querySelector('.scale')
+      function setScale(scale) {
+        schedule.querySelectorAll('.timeslot').forEach(quarterHour => {
+          quarterHour.style.height = `${scale}px`
+        })
+      }
+      setScale(app.state.scale)
+      scheduleScale.addEventListener('input', e => {
+        const scale = e.target.value
+        app.addState({ scale })
+        setScale(scale)
+      })
+      scheduleScale.value = app.state.scale
     })
 }

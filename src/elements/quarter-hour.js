@@ -14,17 +14,25 @@ export default class QuarterHour extends Component {
       this.onDropTask(e.dataTransfer.getData("text"))
     })
   }
-  loadState() {
-    return new Timeslot(
+
+  createState() {
+    this.state = new Timeslot(
       parseInt(this.getAttribute('hour')), 
       parseInt(this.getAttribute('quarter')) 
     )
   }
-  getState() { return this.timeslot }
-  setState(state) { this.timeslot = state }
+
+  setState() {}
+
+  renderedState() {
+    const currentTime = Timeslot.now() 
+    if (Timeslot.equals(this.state, currentTime)) {
+      document.getElementById(currentTime.timestr).classList.add('now')
+    }
+  }
 
   equalsTimeslot(timeslot) {
-    return this.timeslot.hour === timeslot.hour && this.timeslot.quarter === timeslot.quarter
+    return this.state.hour === timeslot.hour && this.state.quarter === timeslot.quarter
   }
 
   static quarteredDay() {
