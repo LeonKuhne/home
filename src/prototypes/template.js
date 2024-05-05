@@ -9,6 +9,7 @@ const renderCallbacks = []
 //
 // State - TODO use a class instance for state
 
+Document.prototype.getState = function() { return completeState }
 Document.prototype.setState = function(state) { completeState = state }
 Document.prototype.addState = function(state) { 
   for (let [key, value] of Object.entries(state)) {
@@ -24,16 +25,16 @@ Document.prototype.removeState = function(key) { delete completeState[key] }
 document.addEventListener('DOMContentLoaded', () => document.render())
 
 Document.prototype.render = function(state = {}) {
-  const focusedElementId = document.activeElement?.id
-  document.body.innerHTML = bodyTemplate // calls component connected callbacks
   this.addState(state)
-  document.iterate(completeState)
-  document.check(completeState)
-  document.body.fill(completeState)
+  const focusedElementId = this.activeElement?.id
+  this.body.innerHTML = bodyTemplate
+  this.body.querySelectorAll('.for').forEach(elem => elem.iterate(completeState))
+  this.body.querySelectorAll('.if').forEach(elem => elem.check(completeState))
+  this.body.fill(completeState)
   // TODO apply the state queries
   //for (let [key, value] of Object.entries(state))
   //  completeState[new Query(key).read(state)] = value
-  if (focusedElementId) document.getElementById(focusedElementId)?.focus()
+  if (focusedElementId) this.getElementById(focusedElementId)?.focus()
   for (let callback of renderCallbacks) callback(completeState)
 }
 
@@ -42,14 +43,6 @@ Document.prototype.onRender = function(callback) { renderCallbacks.push(callback
 
 // 
 // Lifecyle
-
-Document.prototype.iterate = function(state) {
-  this.querySelectorAll('.for').forEach(elem => elem.iterate(state))
-}
-
-Document.prototype.check = function(state) {
-  this.querySelectorAll('.if').forEach(elem => elem.check(state))
-}
 
 
 //
@@ -110,7 +103,7 @@ HTMLElement.prototype.iterate = function(state) {
 // @returns null if equals attribute doesnt exist
 HTMLElement.prototype.equalsQuery = function(state, query) {
   if (!query.isValid(state)) {
-    console.warn(`template failed setting visibility for ${attrValue}: missing from state`) 
+    console.warn(`template failed setting visibility for ${query}: missing from state`) 
     return false
   }
   // compare to equals attribute

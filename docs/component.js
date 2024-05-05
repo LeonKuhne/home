@@ -1,5 +1,5 @@
 export default class Component extends HTMLElement {
-  static requiredProperties = ['id', 'loadState']
+  static requiredProperties = ['id', 'initState', 'getState', 'loadState', 'setState']
 
   constructor(registerWithTemplate=true) { 
     super() 
@@ -8,10 +8,16 @@ export default class Component extends HTMLElement {
 
   connectedCallback() { 
     this.requireProperties()
-    const state = this.loadState()
+    // use state if already loaded, otherwise load new
+    const completeState = document.getState()
+    let state = null
+    this.initState()
+    if (completeState.hasOwnProperty(this.id)) {
+      state = completeState[this.id]
+    } else state = this.loadState()
+    this.setState(state)
     if (this.registerWithTemplate) {
-      this.globalState = { [this.id]: state }
-      this.register()
+      this.register(state)
     }
   }
 
@@ -33,8 +39,14 @@ export default class Component extends HTMLElement {
   //
   // Update Template
 
-  register() { document.addState(this.globalState) }
+  register(state) { document.addState({ [this.id]: state }) }
   unregister() { document.removeState(this.id) }
   // TODO only update the state of this component, ie this.render()
-  render() { document.render(this.globalState) }
+  render(state) {
+    if (this.registerWithTemplate) {
+      document.render({ [this.id]: this.getState() }) 
+      return
+    }
+    document.render()
+  }
 }

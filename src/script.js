@@ -4,6 +4,7 @@ import './db.js'
 import ListEntry from './list-entry.js'
 import Task from './task.js'
 import QuarterHour from './quarter-hour.js'
+import Timeslot from './timeslot.js'
 
 const taskManagerId = 'task-manager'
 const scheduleId = 'calendar'
@@ -44,9 +45,16 @@ switch (params.get('page')) {
       title: "Home",
     })
 
+    function updateTime() {
+      const currentTime = Timeslot.now() 
+      document.getElementById(currentTime.timestr).classList.add('now')
+    }
+
     document.onRender(state => {
-      // task-manager interactions
       const taskManager = document.getElementById(taskManagerId)
+      const schedule = document.getElementById(scheduleId)
+
+      // task-manager interactions
       taskManager.collectItem(read => {
         const name = read('#task-name')
         return new Task(name, {
@@ -57,13 +65,20 @@ switch (params.get('page')) {
       })
       taskManager.submitOnEnter('#task-name')
       taskManager.submitOnEnter('input.duration')
-      taskManager.removeOnClick('.remove')
+      taskManager.removeOnClick('.task-list .remove')
 
-      // calendar interactions
+      // schedule interactions
+      schedule.onClick((e, _) => {
+        const timeslot = e.target.closest('.timeslot').timeslot
+        const idx = state[scheduleId].findIndex(slot => Timeslot.equals(timeslot, slot))
+        schedule.update(idx, new Timeslot(timeslot.hour, timeslot.quarter))
+      }, '.timeslot .remove')
+
+      // schedule drag interactions
       taskManager.querySelectorAll('.item').forEach(item => {
         item.addEventListener('dragstart', e => e.dataTransfer.setData('text/plain', e.target.id))
       })
-      taskManager.querySelectorAll('.hour-marker').forEach(quarterHour => quarterHour.onDropTask = (taskId) => {
+      taskManager.querySelectorAll('.timeslot').forEach(quarterHour => quarterHour.onDropTask = (taskId) => {
         const task = state[taskManagerId].find(task => task.id === taskId)
         console.log('drop', taskId)
         for (let i = 0; i < state[scheduleId].length; i++) {
@@ -71,10 +86,15 @@ switch (params.get('page')) {
           if (quarterHour.equalsTimeslot(timeslot)) {
             timeslot.task = task
             timeslot.duration = parseInt(task.duration)
-            document.getElementById(scheduleId).update(i, timeslot)
+            schedule.update(i, timeslot)
             return
           }
         }
       })
+
+      // load save schedule scroll position
+      const scrollId = 'scrollPosition'
+      schedule.scrollTop = localStorage.getItem(scrollId) ?? 0
+      schedule.addEventListener('scroll', e => localStorage.setItem(scrollId, e.target.scrollTop))
     })
 }

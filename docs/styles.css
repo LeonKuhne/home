@@ -685,6 +685,11 @@ list-entry .remove {
   flex-direction: column;
 }
 
+.fill {
+  width: 100%;
+  height: 100%;
+}
+
 .entry .duration {
   width: 5rem;
 }
@@ -697,6 +702,12 @@ list-entry .remove {
 #calendar .schedule {
   width: 100%;
   top: 0;
+}
+#calendar .schedule .timeslot:not([quarter="0"]) .hour-marker {
+  font-size: small;
+}
+#calendar .schedule .timeslot.now {
+  background: red;
 }
 #calendar .schedule .timeslot {
   width: 100%;
@@ -713,12 +724,10 @@ list-entry .remove {
   text-align: right;
   color: rgba(0, 0, 0, 0.5);
 }
-#calendar .schedule .timeslot .hour-marker:not([quarter="0"]) {
-  font-size: small;
-}
 
 .stats {
   background: #575;
+  width: 100%;
 }
 
 /*# sourceMappingURL=styles.css.map */

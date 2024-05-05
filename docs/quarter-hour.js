@@ -7,20 +7,21 @@ export default class QuarterHour extends Component {
     this.onDropTask = () => {}
   }
 
-  // TODO load saved from db
-  loadState() {
-    this.timeslot = new Timeslot(
-      parseInt(this.getAttribute('hour')), 
-      parseInt(this.getAttribute('quarter')) 
-    )
-    // listen for dropped tasks
+  initState() {
     this.addEventListener('dragover', e => e.preventDefault())
     this.addEventListener('drop', e => {
       e.preventDefault()
       this.onDropTask(e.dataTransfer.getData("text"))
     })
-    return this.timeslot
   }
+  loadState() {
+    return new Timeslot(
+      parseInt(this.getAttribute('hour')), 
+      parseInt(this.getAttribute('quarter')) 
+    )
+  }
+  getState() { return this.timeslot }
+  setState(state) { this.timeslot = state }
 
   equalsTimeslot(timeslot) {
     return this.timeslot.hour === timeslot.hour && this.timeslot.quarter === timeslot.quarter

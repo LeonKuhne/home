@@ -11,6 +11,11 @@ list-entry .remove {
   flex-direction: column;
 }
 
+.fill {
+  width: 100%;
+  height: 100%;
+}
+
 .entry .duration {
   width: 5rem;
 }
@@ -22,7 +27,11 @@ list-entry .remove {
   .schedule {
     width: 100%;
     top: 0;
-    .timeslot {
+    .timeslot:not([quarter="0"]) .hour-marker {
+      font-size: small;
+    } .timeslot.now {
+      background: red;
+    } .timeslot {
       width: 100%;
       white-space: nowrap;
       height: 2rem;
@@ -35,8 +44,6 @@ list-entry .remove {
         text-align: right;
         color: rgba($color: #000000, $alpha: 0.5);
         // align center
-      } .hour-marker:not([quarter="0"]) {
-        font-size: small;
       }
     }
   }
@@ -44,4 +51,5 @@ list-entry .remove {
 
 .stats{
   background: #575;
+  width: 100%;
 }
