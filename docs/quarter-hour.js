@@ -9,7 +9,7 @@ export default class QuarterHour extends Component {
 
   // TODO load saved from db
   loadState() {
-    this._timeslot = new Timeslot(
+    this.timeslot = new Timeslot(
       parseInt(this.getAttribute('hour')), 
       parseInt(this.getAttribute('quarter')) 
     )
@@ -18,13 +18,12 @@ export default class QuarterHour extends Component {
     this.addEventListener('drop', e => {
       e.preventDefault()
       this.onDropTask(e.dataTransfer.getData("text"))
-      this.render()
     })
-    return this._timeslot
+    return this.timeslot
   }
 
-  getTimeslot(state) { 
-    return state.schedule.find(timeslot => timeslot.equals(this._timeslot))
+  equalsTimeslot(timeslot) {
+    return this.timeslot.hour === timeslot.hour && this.timeslot.quarter === timeslot.quarter
   }
 
   static quarteredDay() {

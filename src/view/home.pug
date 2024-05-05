@@ -1,5 +1,5 @@
-list-entry#task-manager.pad-5
-  .entry.flex
+list-entry#task-manager.pad-5.abs
+  entry.flex
     input#task-name.grow(type="text" placeholder="new task")
     input.duration(type="number" placeholder="mins" title="duration" step="15" min="0" max="120" value="30")
   .expand.gap-1
@@ -10,9 +10,10 @@ list-entry#task-manager.pad-5
           .name.grow $item.name
           .duration $item.duration
           .remove x
-    .calendar 
-      .for.day.schedule(list="$schedule")
-        .timeslot.flex
-          .if.event.expand.lpad-1(show="$item.task") $item.task.name
-          quarter-hour.hour-marker.rpad-1(id="$item.timestr" hour="$item.hour" quarter="$item.quarter") $item.timestr
+    list-entry#calendar 
+      .rel
+        .for.day.schedule.abs(list="$calendar")
+          .timeslot.flex.gap-1
+            .if.event.grow.lmar-1(show="$item.task") $item.task.name
+            quarter-hour.hour-marker.shrink.rpad-1(id="$item.timestr" hour="$item.hour" quarter="$item.quarter") $item.timestr
   .stats Graphs

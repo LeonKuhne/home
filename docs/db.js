@@ -3,16 +3,28 @@ Storage.prototype.getList = function(key) {
 }
 
 Storage.prototype.addToList = function(key, item) {
-  const list = this.getList(key)
-  list.unshift(item)
+  return this.modifyList(key, list => {
+    list.unshift(item)
+    return list
+  })
+}
+
+Storage.prototype.removeFromList = function(key, idx) {
+  return this.modifyList(key, list => {
+    list.splice(idx, 1)
+    return list
+  })
+}
+
+Storage.prototype.updateList = function(key, item, idx) {
+  return this.modifyList(key, list => {
+    list[idx] = item
+    return list
+  })
+}
+
+Storage.prototype.modifyList = function(key, modify) {
+  const list = modify(this.getList(key))
   localStorage.setItem(key, JSON.stringify(list))
   return list
 }
-
-Storage.prototype.removeFromList = function(key, index) {
-  const list = this.getList(key)
-  list.splice(index, 1)
-  localStorage.setItem(key, JSON.stringify(list))
-  return list
-}
-

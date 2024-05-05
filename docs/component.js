@@ -8,8 +8,11 @@ export default class Component extends HTMLElement {
 
   connectedCallback() { 
     this.requireProperties()
-    this.globalState = { [this.id]: this.loadState() }
-    if (this.registerWithTemplate) this.register()
+    const state = this.loadState()
+    if (this.registerWithTemplate) {
+      this.globalState = { [this.id]: state }
+      this.register()
+    }
   }
 
   disconnectCallback() { if (this.registerWithTemplate) this.unregister() } 
@@ -32,5 +35,6 @@ export default class Component extends HTMLElement {
 
   register() { document.addState(this.globalState) }
   unregister() { document.removeState(this.id) }
+  // TODO only update the state of this component, ie this.render()
   render() { document.render(this.globalState) }
 }

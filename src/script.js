@@ -5,15 +5,17 @@ import ListEntry from './list-entry.js'
 import Task from './task.js'
 import QuarterHour from './quarter-hour.js'
 
-// custom elements
+const taskManagerId = 'task-manager'
+const scheduleId = 'calendar'
+
+// create schedule if none saved
+if (localStorage.getItem(scheduleId) === null) {
+  localStorage.setItem(scheduleId, JSON.stringify(QuarterHour.quarteredDay()))
+}
+
+// define custom elements
 customElements.define('list-entry', ListEntry)
 customElements.define('quarter-hour', QuarterHour)
-
-// list-entry hooks
-//  .collectItem(read => read('.add'))
-//  .collectItem(read => `${read('.score')}| ${read('.name')} → ${read('.reason')}`)
-//  .submitOnEnter('.name', '.reason', '.add')
-//  .removeOnClick('.reason')
 
 //
 // Read URL
@@ -37,14 +39,14 @@ switch (params.get('page')) {
   // Task Manager
 
   default:
+
     document.setState({ 
       title: "Home",
-      schedule: QuarterHour.quarteredDay()
     })
 
     document.onRender(state => {
       // task-manager interactions
-      const taskManager = document.querySelector('#task-manager')
+      const taskManager = document.getElementById(taskManagerId)
       taskManager.collectItem(read => {
         const name = read('#task-name')
         return new Task(name, {
@@ -62,10 +64,17 @@ switch (params.get('page')) {
         item.addEventListener('dragstart', e => e.dataTransfer.setData('text/plain', e.target.id))
       })
       taskManager.querySelectorAll('.hour-marker').forEach(quarterHour => quarterHour.onDropTask = (taskId) => {
-        const task = state['task-manager'].find(task => task.id === taskId)
+        const task = state[taskManagerId].find(task => task.id === taskId)
         console.log('drop', taskId)
-        const timeslot = quarterHour.getTimeslot(state)
-        timeslot.assign(task, parseInt(task.duration))
+        for (let i = 0; i < state[scheduleId].length; i++) {
+          const timeslot = state[scheduleId][i]
+          if (quarterHour.equalsTimeslot(timeslot)) {
+            timeslot.task = task
+            timeslot.duration = parseInt(task.duration)
+            document.getElementById(scheduleId).update(i, timeslot)
+            return
+          }
+        }
       })
     })
 }

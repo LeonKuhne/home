@@ -30,15 +30,28 @@ select, button {
   cursor: pointer;
 }
 
+/* template specific */
+
+// hide loading template elements .if with attribute "show" or attribute "hide" have values
+.if[show], .if[hide] {
+  display: none;
+}
+
 /* flex (extra) */
 
 .flex, .expand {
   display: flex;
 } .grow, .expand > * {
   flex: 1;
+} .shrink {
+  flex: 0;
 } .col {
   flex-direction: column;
 } 
+
+/* position (extra) */
+.rel { position: relative; } 
+.abs { position: absolute; }
 
 /* center (extra) */
 
@@ -71,7 +84,6 @@ select, button {
 
 // spacing
 @include repeat("gap", 10, "rem", "gap");
-@include repeat("grow", 10, "", "flex");
 // padding
 @include repeat("pad", 10, "rem", "padding");
 @include repeat("rpad", 10, "rem", "padding-right");

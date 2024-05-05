@@ -6,6 +6,7 @@ export default class Query {
     this.var = Query.var(str)
   }
 
+  isNull() { return !this.var }
   isValid(state) { return this.var && state.hasOwnProperty(this.var) }
 
   read(state) {
@@ -21,7 +22,7 @@ export default class Query {
   // Static
 
   static var(str) {
-    if (!str.startsWith('$') || str.length < 3) return null
+    if (!str || !str.startsWith('$') || str.length < 3) return null
     // remove prefix and extensions
     return str.substring(1).match(/^[a-zA-Z0-9\-]*/)[0]
   }

@@ -1,9 +1,12 @@
 import Component from './component.js'
 
+// usage: construct with collect action, then interact using CRUD operators
+//   .collectItem(read => return ...read(query))
+//   .submitOnEnter(...queries)
+//   .removeOnClick(...queries)
+
 export default class ListEntry extends Component {
-  constructor() { 
-    super() 
-  }
+  constructor() { super() }
 
   loadState() { 
     this.items = localStorage.getList(this.id) || []
@@ -14,6 +17,7 @@ export default class ListEntry extends Component {
   //
   // Actions
 
+  // eg .collectItem(read => return read(query))
   collectItem(getAddState) { this._getAddState = getAddState }
   submitAdd() { this.add(this._getAddState((query) => this.read(query))) }
 
@@ -48,8 +52,13 @@ export default class ListEntry extends Component {
     this.render()
   }
 
-  remove(index) {
-    this.items = localStorage.removeFromList(this.id, index)
+  remove(idx) {
+    this.items = localStorage.removeFromList(this.id, idx)
+    this.render()
+  }
+
+  update(idx, item) {
+    this.items = localStorage.updateList(this.id, item, idx)
     this.render()
   }
 }
