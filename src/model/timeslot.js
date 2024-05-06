@@ -4,19 +4,29 @@ export default class Timeslot {
     this.quarter = quarter
     this.task = null
     this.duration = 15
-    const date = new Date()
-    date.setHours(this.hour, this.quarter * 15) 
-    this.timestr = date.toLocaleTimeString('en-US', { hour: 'numeric', hour12: true, minute: '2-digit' })
+    this.date = new Date()
+    this.date.setHours(this.hour, this.quarter * 15) 
+    this.timestr = this.date.toLocaleTimeString('en-US', { hour: 'numeric', hour12: true, minute: '2-digit' })
   }
 
   static now() {
     const date = new Date()
     const hour = date.getHours()
     const quarter = Math.floor(date.getMinutes() / 15)
-    return new Timeslot(hour, quarter)
+    const timeslot = new Timeslot(hour, quarter)
+    return timeslot
   }
 
   static equals(a, b) {
     return a.hour === b.hour && a.quarter === b.quarter
   }
+
+  static next(timeslot) {
+    let [hour, quarter] = [timeslot.hour, timeslot.quarter]
+    if (timeslot.quarter !== 3) quarter += 1
+    else { hour += 1; quarter = 0 }
+    return new Timeslot(hour, quarter)
+  } 
+  
+  static quarterInMS() { return 15 * 60 * 1000 }
 }

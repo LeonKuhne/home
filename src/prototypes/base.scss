@@ -46,6 +46,7 @@ select, button {
 } .shrink {
   flex: 0;
 } .col {
+  display: flex;
   flex-direction: column;
 } 
 

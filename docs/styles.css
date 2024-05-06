@@ -47,6 +47,7 @@ select, button {
 }
 
 .col {
+  display: flex;
   flex-direction: column;
 }
 
@@ -703,26 +704,26 @@ list-entry .remove {
   width: 100%;
   top: 0;
 }
-#calendar .schedule .timeslot:not([quarter="0"]) .hour-marker {
-  font-size: small;
-}
-#calendar .schedule .timeslot.now {
-  background: #756;
-}
-#calendar .schedule .timeslot {
-  width: 100%;
-  white-space: nowrap;
+#calendar .timeslot {
   height: 2rem;
   align-items: center;
 }
-#calendar .schedule .timeslot .event {
+#calendar .timeslot .name {
   overflow: scroll;
+  white-space: nowrap;
 }
-#calendar .schedule .timeslot .hour-marker {
+#calendar .timeslot .hour-marker {
   display: block;
   width: 100%;
   text-align: right;
   color: rgba(0, 0, 0, 0.5);
+  white-space: nowrap;
+}
+#calendar .timeslot:not([quarter="0"]) .hour-marker {
+  font-size: small;
+}
+#calendar .timeslot.now {
+  background: #756;
 }
 
 .stats {

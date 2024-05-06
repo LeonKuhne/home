@@ -1,9 +1,9 @@
 import Query from './query.js'
+import Component from './component.js'
 
 export default class App {
   constructor(query) {
     this.root = document.querySelector(query)
-    this.queries = [] // todo get rid of these if unused (think they are)
     this.renderCallbacks = []
     this.template = this.root.innerHTML
     this.root.innerHTML = ''
@@ -26,10 +26,7 @@ export default class App {
   }
 
   addState(state) {
-    for (let [key, value] of Object.entries(state)) {
-      if (key.startsWith('$')) this.queries.push(new Query(key))
-      else this.state[key] = value
-    }
+    this.state = { ...this.state, ...state}
     this.saveState()
   }
 
@@ -45,15 +42,19 @@ export default class App {
 
   render() {
     const focusedElementId = document.activeElement?.id
+    // reset components
     this.root.innerHTML = this.template
+    // apply attributes
     this.root.querySelectorAll('.for').forEach(elem => this.iterate(elem))
     this.root.querySelectorAll('.if').forEach(elem => this.applyVisibility(elem))
+    // replace variables
     this.fill(this.state)
-    // TODO apply the state queries
-    //for (let [key, value] of Object.entries(state))
-    //  completeState[new Query(key).read(state)] = value
+    // update focus
     if (focusedElementId) this.root.querySelector('#'+focusedElementId)?.focus()
+    // render callbacks
     for (let callback of this.renderCallbacks) callback(this.state)
+    // render components
+    Component.renderLate(this)
   }
 
   onRender(callback) { this.renderCallbacks.push(callback) }
@@ -66,7 +67,6 @@ export default class App {
     Object.keys(this.state).forEach(key => {
       html = html.replace(new RegExp(`\\$${key}[^!=\\s|\\<|\\"]*`, 'g'), (match) => {
         const fillValue = new Query(match).read(this.state)
-        console.info("template replace: ", match, fillValue)
         return fillValue
       })
     })

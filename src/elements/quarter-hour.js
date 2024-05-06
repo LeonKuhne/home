@@ -25,10 +25,21 @@ export default class QuarterHour extends Component {
   setState() {}
 
   renderedState() {
-    const currentTime = Timeslot.now() 
-    if (Timeslot.equals(this.state, currentTime)) {
-      document.getElementById(currentTime.timestr).classList.add('now')
+    // todo set the timeslot value here, since the id is a query and doesnt translate until rendered
+    if (Timeslot.equals(this.state, Timeslot.now())) {
+      this.highlightTimeslot()
+    } else {
+      const timeUntilStarts = this.state.date - Date.now()
+      setTimeout(() => this.highlightTimeslot(), timeUntilStarts)
     }
+  }
+
+  highlightTimeslot() { // tested and working
+    const elem = document.getElementById(this.state.timestr)
+    if (!elem) return
+    let timeRemaining = Timeslot.next(this.state).date - Date.now()
+    elem.classList.add('now')
+    setTimeout(() => elem.classList.remove('now'), timeRemaining)
   }
 
   equalsTimeslot(timeslot) {

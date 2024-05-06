@@ -17,10 +17,10 @@ export default class ListEntry extends Component {
   }
 
   setState() {
-    this.scrollTop = this.state.scrollTop
   }
 
   renderedState() {
+    this.scrollTop = this.state.scrollTop
     this.addEventListener('scroll', e => {
       // set all children to a fixed height
       const heights = []

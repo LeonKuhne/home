@@ -1,11 +1,22 @@
 export default class Component extends HTMLElement {
   static requiredProperties = ['id', 'initState', 'createState', 'setState', 'renderedState']
-  static registrations = {} // [tagName]: app
+  static registrations = {} // [TAG-NAME]: [ ...{ app, instances } ]
 
   static registerWithApp(tagName, app) {
-    if (!Component.registrations[tagName]) Component.registrations[tagName] = []
-    Component.registrations[tagName].push(app)
+    const key = tagName.toUpperCase()
+    if (!Component.registrations[key]) Component.registrations[key] = []
+    Component.registrations[key].push({ app, instances: [] })
     customElements.define(tagName, this)
+  }
+
+  registerInstanceWithApp() {
+    for (let {instances} of Object.values(Component.registrations[this.tagName])) {
+      instances.push(this)
+    }
+  }
+
+  static renderLate(targetApp) {
+    for (let instance of Component.appInstances(targetApp)) instance.renderedState()
   }
 
   constructor(registerWithTemplate=true) { 
@@ -16,15 +27,16 @@ export default class Component extends HTMLElement {
   connectedCallback() { 
     this.requireProperties()
     this.initState()
+    this.registerInstanceWithApp()
     for (let app of this.apps) {
-      if (!app.state.hasOwnProperty(this.id)) this.createState()
-      else {
+      // fill data
+      if (app.state.hasOwnProperty(this.id)) {
         this.state = app.state[this.id]
         this.setState()
-      }
-      if (this.registerWithTemplate) this.register(app)
-      this.renderedState()
+      // new data
+      } else this.createState()
     }
+    this.updateTemplate(false)
   }
 
   disconnectCallback() { if (this.registerWithTemplate) this.unregister() } 
@@ -46,8 +58,6 @@ export default class Component extends HTMLElement {
   // Update Template
 
   globalState() { return { [this.id]: this.state } }
-  register(app) { app.addState(this.globalState()) }
-  unregister(app) { app.removeState(this.id) }
   // TODO only rerender this component not the whole app
   updateTemplate(render=true) {
     for (let app of this.apps) {
@@ -59,7 +69,21 @@ export default class Component extends HTMLElement {
   //
   // Helpers
 
-  get apps() { 
-    return Component.registrations[this.tagName.toLowerCase()]
+  get apps() { // get the apps this component belongs to
+    const apps = []
+    for (let { app, instances } of Component.registrations[this.tagName]) {
+      if (instances.includes(this)) apps.push(app)
+    }
+    return apps
+  }
+
+  static appInstances(targetApp) {
+    const allInstances = []
+    for (let appInstances of Object.values(Component.registrations)) {
+      for (let appInstance of appInstances) {
+        if (targetApp === appInstance.app) allInstances.push(...appInstance.instances)
+      }
+    }
+    return allInstances
   }
 }

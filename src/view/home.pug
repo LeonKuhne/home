@@ -11,15 +11,16 @@
             .name.grow $item.name
             .duration $item.duration
             .remove x
-      .flex.col
+      .col
         input.scale(type="range" min="8" max="48" step="0" value="20")
         list-entry#calendar.container.grow
           .rel
             .for.day.schedule.abs(list="$calendar.items")
-              quarter-hour.timeslot.flex.gap-1(id="$item.timestr" hour="$item.hour" quarter="$item.quarter") 
-                .if.event.grow.flex.lmar-1.gap-1(show="$item.task") 
+              quarter-hour.timeslot.flex.gap-1.hpad-1(id="$item.timestr" hour="$item.hour" quarter="$item.quarter") 
+                .if.task.flex.grow.gap-1(show="$item.task") 
                   .remove x
-                  div $item.task.name
-                .rpad-1.shrink.hour-marker $item.timestr
+                  .rel.grow
+                    .abs.fill.name $item.task.name
+                .hour-marker.shrink $item.timestr
     .rel
       .stats.abs Graphs

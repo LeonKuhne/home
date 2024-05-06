@@ -29,25 +29,23 @@ list-entry .remove {
     background: #557;
     width: 100%;
     top: 0;
-    .timeslot:not([quarter="0"]) .hour-marker {
-      font-size: small;
-    } .timeslot.now {
-      background: #756
-    } .timeslot {
-      width: 100%;
+  } .timeslot {
+    height: 2rem;
+    align-items: center;;
+    .name {
+      overflow: scroll;
       white-space: nowrap;
-      height: 2rem;
-      align-items: center;
-      .event {
-        overflow: scroll;
-      } .hour-marker {
-        display: block;
-        width: 100%;
-        text-align: right;
-        color: rgba($color: #000000, $alpha: 0.5);
-        // align center
-      }
+    } .hour-marker {
+      display: block;
+      width: 100%;
+      text-align: right;
+      color: rgba($color: #000000, $alpha: 0.5);
+      white-space: nowrap;
     }
+  } .timeslot:not([quarter="0"]) .hour-marker {
+    font-size: small;
+  } .timeslot.now {
+    background: #756
   }
 }
 
