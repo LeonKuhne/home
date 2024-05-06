@@ -12,6 +12,7 @@ function compile {
   sass src/styles.scss:$export_dir/styles.css # styles
   cp src/*.js $export_dir # code
   cp src/**/*.js $export_dir # code
+  echo "home.leonk.dev" > $export_dir/CNAME # cname
 }
 
 function build {
