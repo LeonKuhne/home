@@ -1,9 +1,22 @@
 @use 'prototypes/base';
 
-list-entry .remove {
+.remove {
   color: red;
   cursor: pointer;
   user-select: none;
+}
+
+.task-list {
+  .item:hover {
+    background: #0000003a;
+    border-radius: 5px;
+    margin-left: -0.5rem;
+    margin-right: -0.5rem;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  } .item:active {
+    background: #00000056;
+  }
 }
 
 #task-manager {
