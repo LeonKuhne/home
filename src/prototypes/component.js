@@ -1,3 +1,7 @@
+// TODO
+// could probably extract out an RegisteredElement class that handles the registration
+// also would be nice to make an AppElement instead of overriding the html element prototypes, and dumping all that shit in one file
+
 export default class Component extends HTMLElement {
   static requiredProperties = ['id', 'initState', 'createState', 'setState', 'renderedState']
   static registrations = {} // [TAG-NAME]: [ ...{ app, instances } ]

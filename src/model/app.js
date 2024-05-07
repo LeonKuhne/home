@@ -7,6 +7,7 @@ export default class App {
     this.renderCallbacks = []
     this.template = this.root.innerHTML
     this.root.innerHTML = ''
+    this.name = `${query}-app`
     this.table = `${query}-state`
     this.state = JSON.parse(localStorage.getItem(this.table)) || {}
     document.addEventListener('DOMContentLoaded', _ => this.render())
@@ -41,6 +42,7 @@ export default class App {
   // Render
 
   render() {
+    console.info(`${this.name} rendering`)
     const focusedElementId = document.activeElement?.id
     // reset components
     this.root.innerHTML = this.template

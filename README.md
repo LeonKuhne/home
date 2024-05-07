@@ -4,4 +4,8 @@
 - optimized for performance and readability using pug, sass and custom templating
 
 ## Release | Todo
-- remove monkey-patching collisions from prototypes; probably forever out of scope for this project
+- add mobile support
+- see todos in code
+
+## Notes
+- monkey-patching is slowly being replaced
