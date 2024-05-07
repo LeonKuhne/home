@@ -4,7 +4,7 @@
 - optimized for performance and readability using pug, sass and custom templating
 
 ## Release | Todo
-- use typescript (on at least component, app)
+- use typescript (on at least the component and app)
 - see todos in code
 - add mobile support
 
