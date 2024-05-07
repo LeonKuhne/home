@@ -4,8 +4,8 @@
 - optimized for performance and readability using pug, sass and custom templating
 
 ## Release | Todo
-- add mobile support
 - see todos in code
+- add mobile support
 
 ## Notes
 - monkey-patching is slowly being replaced
