@@ -55,7 +55,7 @@ export default class ListEntry extends Component {
 
   submitOnClick(...queries) { this.onClick(_ => this.submitAdd(), ...queries) }
   submitOnEnter(...queries) { this.onEnter(_ => this.submitAdd(), ...queries) }
-  removeOnClick(...queries) { this.onClick((index) => this.remove(index), ...queries) }
+  removeOnClick(...queries) { this.onClick((_, index) => this.remove(index), ...queries) }
   onEnter(callback, ...queries) {
     this.onAction('keypress', (e, idx) => {
       if (e.key === 'Enter') callback(e, idx)
