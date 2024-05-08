@@ -8,7 +8,7 @@ export default class QuarterHour extends Component {
   }
 
   initState() {
-    this.addEventListener('dragover', e => e.preventDefault())
+    this.highlightOnDrag(this)
     this.addEventListener('drop', e => {
       e.preventDefault()
       this.onDropTask(e.dataTransfer.getData("text"))
@@ -32,6 +32,8 @@ export default class QuarterHour extends Component {
       if (timeUntilStarts < 0) return // previous timeslots
       setTimeout(() => this.highlightTimeslot(), timeUntilStarts)
     }
+    // highlight drag over on abs elements
+    this.querySelectorAll('.abs').forEach(elem => this.highlightOnDrag(elem))
   }
 
   highlightTimeslot() { // tested and working
@@ -44,6 +46,17 @@ export default class QuarterHour extends Component {
 
   equalsTimeslot(timeslot) {
     return this.state.hour === timeslot.hour && this.state.quarter === timeslot.quarter
+  }
+
+  dragOver() { this.classList.add('dragtask') }
+  dragLeave() { this.classList.remove('dragtask') }
+
+  highlightOnDrag(elem) {
+    elem.addEventListener('dragover', e => {
+      e.preventDefault()
+      this.dragOver()
+    })
+    elem.addEventListener('dragleave', _ => this.dragLeave())
   }
 
   static quarteredDay() {

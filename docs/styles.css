@@ -726,6 +726,7 @@ select, button {
 #calendar .timeslot {
   height: 2rem;
   align-items: center;
+  background: inherit;
 }
 #calendar .timeslot .name {
   overflow: scroll;
@@ -743,6 +744,9 @@ select, button {
 }
 #calendar .timeslot.now {
   background: #756;
+}
+#calendar .timeslot.dragtask {
+  filter: brightness(1.2);
 }
 
 .stats {
