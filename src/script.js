@@ -8,6 +8,39 @@ import App from './app.js'
 
 const taskManagerId = 'task-manager'
 const scheduleId = 'calendar'
+const welcomeMessages = [
+  "Welcome, brave soul!",
+  "Greetings, fellow coder!",
+  "Step right in, it's cozy!",
+  "Enter the fun zone!",
+  "Welcome aboard!",
+  "Hello, digital friend!",
+  "Ready, set, code!",
+  "You're here! Yay!",
+  "Welcome to the party!",
+  "Let's code together!",
+  "Greetings, traveler!",
+  "Welcome, explorer!",
+  "Come on in!",
+  "Coding adventure awaits!",
+  "You made it!",
+  "Welcome, friend!",
+  "Hello, world!",
+  "Greetings, newcomer!",
+  "Join the fun!",
+  "Welcome home!",
+  "Coding starts now!",
+  "Enter the matrix!",
+  "Hello, geek!",
+  "Welcome to cyberspace!",
+  "Happy coding!",
+  "You belong here!",
+  "Welcome to the web!",
+  "The code is strong!",
+  "Welcome, fellow geek!",
+  "Coding happiness begins!"
+];
+
 
 const app = new App('#app')
 app.define('list-entry', ListEntry)
@@ -48,6 +81,9 @@ switch (params.get('page')) {
     app.onRender(state => {
       const taskManager = document.getElementById(taskManagerId)
       const schedule = document.getElementById(scheduleId)
+
+      // randomize the #task-name placeholder with a random welcome message
+      taskManager.querySelector('#task-name').placeholder = welcomeMessages[Math.floor(Math.random() * welcomeMessages.length)]
 
       // task-manager interactions
       taskManager.collectItem(read => {
