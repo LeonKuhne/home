@@ -731,6 +731,7 @@ select, button {
 #calendar .timeslot .name {
   overflow: scroll;
   white-space: nowrap;
+  padding-bottom: 0.5rem;
 }
 #calendar .timeslot .hour-marker {
   display: block;
