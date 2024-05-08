@@ -91,11 +91,9 @@ switch (params.get('page')) {
         return new Task(name, {
           id: new String(name.hashCode()),
           createdAt: new Date().toISOString(),
-          duration: read('input.duration'),
         })
       })
       taskManager.submitOnEnter('#task-name')
-      taskManager.submitOnEnter('input.duration')
       taskManager.removeOnClick('.task-list .remove')
 
       // schedule interactions
@@ -118,7 +116,6 @@ switch (params.get('page')) {
           const timeslot = state[scheduleId].items[i]
           if (quarterHour.equalsTimeslot(timeslot)) {
             timeslot.task = task
-            timeslot.duration = parseInt(task.duration)
             schedule.update(i, timeslot)
             return
           }

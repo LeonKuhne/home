@@ -709,10 +709,6 @@ select, button {
   height: 100%;
 }
 
-.entry .duration {
-  width: 5rem;
-}
-
 #calendar {
   overflow-y: scroll;
   height: 100%;
