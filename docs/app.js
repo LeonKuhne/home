@@ -47,6 +47,7 @@ export default class App {
     // reset components
     this.root.innerHTML = this.template
     // apply attributes
+    // TODO make .for and .if their own components
     this.root.querySelectorAll('.for').forEach(elem => this.iterate(elem))
     this.root.querySelectorAll('.if').forEach(elem => this.applyVisibility(elem))
     // replace variables
@@ -144,7 +145,7 @@ export default class App {
   setVisibleOnAttribute(elem, attrName, valueMeansVisible=true) {
     const query = elem.popAttributeQuery(attrName)
     if (query.isNull()) return false
-    const elseElem = elem.nextElementSibling?.classList.contains('else') ? this.nextElementSibling : null
+    const elseElem = elem.nextElementSibling?.classList.contains('else') ? elem.nextElementSibling : null
     // matches equals attribute
     const matchesEquals = this.equalsQuery(elem, query) ?? query.read(this.state) != null
     // set visibility
