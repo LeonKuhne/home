@@ -6,7 +6,7 @@
           input#task-name.grow(type="text" placeholder="")
         h2 Tasks
         .tasks.grow.rel
-          .task-items.for.abs.rpad-1(list="$task-manager.items")
+          .task-items.for.fill.abs(list="$task-manager.items")
             .item.flex.gap-1.noselect(draggable="true" id="$item.id")
               .name.grow $item.name
               .remove x
