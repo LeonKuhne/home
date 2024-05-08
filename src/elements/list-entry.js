@@ -22,21 +22,8 @@ export default class ListEntry extends Component {
   renderedState() {
     this.scrollTop = this.state.scrollTop
     this.addEventListener('scroll', e => {
-      // set all children to a fixed height
-      const heights = []
-      for (let child of this.children) {
-        heights.push(child.style.height)
-        child.style.height = '100px'
-      }
-
-      // set scroll pos
       this.state.scrollTop = e.target.scrollTop
       this.updateTemplate(false)
-
-      // reset children's fixed height
-      for (let i=0; i<this.children.length; i++) {
-        this.children[i].style.height = heights[i]
-      }
     })
   }
 

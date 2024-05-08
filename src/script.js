@@ -98,7 +98,11 @@ switch (params.get('page')) {
       }
       setScale(app.state.scale)
       scheduleScale.addEventListener('input', e => {
-        const scale = e.target.value
+        let scale = parseFloat(e.target.value)
+        const height = schedule.getBoundingClientRect().height
+        const numQuarters = 24 * 4
+        const maxZoom = 21
+        scale = ((1 + (scale ** 2.5 * maxZoom)) * height) / numQuarters
         app.addState({ scale })
         setScale(scale)
       })
