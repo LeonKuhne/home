@@ -157,10 +157,20 @@ switch (params.get('page')) {
         app.render()
       })
 
-
-      // delete space
+      // modal interactions
       const modal = document.querySelector('.modal')
       if (!modal) return
+
+      // create space
+      modal.querySelector('.create').addEventListener('keydown', e => {
+        if (e.key !== 'Enter') return
+        const spaceName = e.target.value
+        if (!spaceName) return
+        // navigate to new space
+        location.href = `?name=${spaceName}`
+      })
+
+      // delete space
       modal.querySelectorAll('.space .remove').forEach(remove => {
         const spaceName = remove.getAttribute('name')
         remove.addEventListener('click', _ => {
@@ -171,15 +181,21 @@ switch (params.get('page')) {
         })
       })
 
-      // escape space menu
+      // close modal with escape key
       document.body.addEventListener('keydown', e => {
         if (e.key !== 'Escape') return
         app.addState({ modal: 'hide' })
         app.render()
       })
 
-      // close space menu
+      // close modal with exit button
       modal.querySelector('.modal .close').addEventListener('click', _ => {
+        app.addState({ modal: 'hide' })
+        app.render()
+      })
+
+      // close modal on click background
+      document.body.querySelector('.modal-bg').addEventListener('click', e => {
         app.addState({ modal: 'hide' })
         app.render()
       })

@@ -8,13 +8,17 @@ body {
   height: 100vh;
 }
 
+body {
+  background: $shadow-color;
+}
+
 body, input {
   color: $primary-color;
-  background: $shadow-color;
   font-size: $primary-font-size;
 }
 
 input {
+  background: transparent;
   border: none;
   border-bottom: 1px solid $primary-color;
   width: 100%;

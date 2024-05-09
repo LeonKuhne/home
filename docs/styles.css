@@ -4,13 +4,17 @@ body {
   height: 100vh;
 }
 
+body {
+  background: #433;
+}
+
 body, input {
   color: #fee;
-  background: #433;
   font-size: 24px;
 }
 
 input {
+  background: transparent;
   border: none;
   border-bottom: 1px solid #fee;
   width: 100%;
