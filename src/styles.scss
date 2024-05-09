@@ -6,11 +6,40 @@
   user-select: none;
 }
 
+.modal-bg {
+  width: 100vw;
+  height: 100vh;
+  backdrop-filter: blur(5px);
+} .modal-container {
+  z-index: 100;
+  .modal {
+    min-width: 30vw;
+    background: #00000037;
+    color: white;
+    padding: 1rem;
+    border-radius: 1rem;
+    .title {
+      font-size: 2rem;
+    } a {
+      color: #ddd;
+      text-decoration: none;
+    } .space:hover {
+      filter: blur(0px) !important;
+    }
+  } .spaces:hover .space {
+    filter: blur(1px);
+  }
+}
+
 .tasks {
   overflow-y: scroll;
   overflow-x: hidden;
   margin-left: -.5rem;
   margin-right: -1rem;
+}
+
+.app-name {
+  cursor: copy;
 }
 
 .task-items {

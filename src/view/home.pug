@@ -1,10 +1,23 @@
 .abs.fill.expand
+  // modal
+  .if.modal-container.abs.center(show="$modal" equals="show")
+    .modal-bg.rel
+    .modal.center 
+      .flex
+        .title.grow Your Spaces
+        .close.remove.shrink x
+      .spaces.for.col(list="$spaces")
+        // go to same url with query param name = item
+        .space.flex.gap-1
+          .remove(name="$item.table") x
+          a(href="$item.url") $item.name
+  // content
   list-entry#task-manager.flex.pad-5
     .expand.grow.gap-1.fill
       .task-list.col
         .entry.flex.gap-1
           input#task-name.grow(type="text" placeholder="")
-        h2 Tasks
+        h2.app-name $name
         .tasks.grow.rel
           .task-items.for.fill.abs(list="$task-manager.items")
             .item.flex.gap-1.noselect(draggable="true" id="$item.id")

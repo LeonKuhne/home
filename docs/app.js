@@ -2,13 +2,13 @@ import Query from './query.js'
 import Component from './component.js'
 
 export default class App {
-  constructor(query) {
+  constructor(query, table=null) {
     this.root = document.querySelector(query)
     this.renderCallbacks = []
     this.template = this.root.innerHTML
     this.root.innerHTML = ''
     this.name = `${query}-app`
-    this.table = `${query}-state`
+    this.table = table ?? `${query}-state`
     this.state = JSON.parse(localStorage.getItem(this.table)) || {}
     document.addEventListener('DOMContentLoaded', _ => this.render())
   }
@@ -111,7 +111,7 @@ export default class App {
   // @returns null if equals attribute doesnt exist
   equalsQuery(elem, query) {
     if (!query.isValid(this.state)) {
-      console.warn(`template failed setting visibility for ${query}: missing from state`) 
+      console.warn(`template failed setting visibility for ${query.str}: missing from state`) 
       return false
     }
     // compare to equals attribute

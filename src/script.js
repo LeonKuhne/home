@@ -41,20 +41,24 @@ const welcomeMessages = [
   "Coding happiness begins!"
 ];
 
-
-const app = new App('#app')
-app.define('list-entry', ListEntry)
-
 //
 // Read URL
 const params = new URLSearchParams(window.location.search)
+
+// Create App
+const tableName = params.has('name') ? params.get('name') : undefined
+const app = new App('#app', tableName)
+app.addState({ name: tableName ?? 'Tasks', modal: 'hide' })
+app.define('list-entry', ListEntry)
+
+// Select Page
 switch (params.get('page')) {
 
   //
   // Todo Page
 
   case 'todo':
-    app.state.title = "Todo"
+    app.addState({ title: "Todo", name: "Todo List" })
     app.onRender(_ => {
       const todoList = document.querySelector('#todo-list')
       todoList.collectItem(read => read('.add'))
@@ -67,8 +71,7 @@ switch (params.get('page')) {
   // Task Manager
 
   default:
-
-    app.state.title = "Home"
+    app.addState({ title: tableName ? `Home | ${tableName}` : "Home" })
     app.define('quarter-hour', QuarterHour)
     app.missingState({
       [scheduleId]: { scrollTop: 0, items: QuarterHour.quarteredDay() },
@@ -140,5 +143,45 @@ switch (params.get('page')) {
         setScale(scale)
       })
       scheduleScale.value = app.state.scale
+
+      // select space
+      document.querySelector('.app-name').addEventListener('click', _ => {
+        // show available
+        const keys = [{name: 'Home', url: '/', table: '#app-state'}]
+        for (let i = 0; i < localStorage.length; i++) {
+          let key = localStorage.key(i)
+          if (key.endsWith('-state')) continue
+          keys.push({name: key, url: '?name=' + key, table: key})
+        }
+        app.addState({ modal: "show", spaces: keys })
+        app.render()
+      })
+
+
+      // delete space
+      const modal = document.querySelector('.modal')
+      if (!modal) return
+      modal.querySelectorAll('.space .remove').forEach(remove => {
+        const spaceName = remove.getAttribute('name')
+        remove.addEventListener('click', _ => {
+          if (confirm(`Are you sure you want to delete space '${spaceName}'?\nWARNING: This will delete all of its data.`)) {
+            localStorage.removeItem(spaceName)
+            if (spaceName === tableName) location.href = '/' 
+          }
+        })
+      })
+
+      // escape space menu
+      document.body.addEventListener('keydown', e => {
+        if (e.key !== 'Escape') return
+        app.addState({ modal: 'hide' })
+        app.render()
+      })
+
+      // close space menu
+      modal.querySelector('.modal .close').addEventListener('click', _ => {
+        app.addState({ modal: 'hide' })
+        app.render()
+      })
     })
 }

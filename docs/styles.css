@@ -681,11 +681,45 @@ select, button {
   user-select: none;
 }
 
+.modal-bg {
+  width: 100vw;
+  height: 100vh;
+  backdrop-filter: blur(5px);
+}
+
+.modal-container {
+  z-index: 100;
+}
+.modal-container .modal {
+  min-width: 30vw;
+  background: rgba(0, 0, 0, 0.2156862745);
+  color: white;
+  padding: 1rem;
+  border-radius: 1rem;
+}
+.modal-container .modal .title {
+  font-size: 2rem;
+}
+.modal-container .modal a {
+  color: #ddd;
+  text-decoration: none;
+}
+.modal-container .modal .space:hover {
+  filter: blur(0px) !important;
+}
+.modal-container .spaces:hover .space {
+  filter: blur(1px);
+}
+
 .tasks {
   overflow-y: scroll;
   overflow-x: hidden;
   margin-left: -0.5rem;
   margin-right: -1rem;
+}
+
+.app-name {
+  cursor: copy;
 }
 
 .task-items .item {
