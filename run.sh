@@ -10,9 +10,10 @@ function compile {
   export_dir=$1
   pug -p src/index.pug < src/index.pug > $export_dir/index.html # markdown
   sass src/styles.scss:$export_dir/styles.css # styles
-  cp src/*.js $export_dir # code
+  cp src/*.js $export_dir    # code
   cp src/**/*.js $export_dir # code
-  echo "home.leonk.dev" > $export_dir/CNAME # cname
+  echo "home.leonk.dev" > $export_dir/CNAME   # cname
+  cp favicon.ico $export_dir # favicon
 }
 
 function build {
