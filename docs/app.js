@@ -1,5 +1,6 @@
 import Query from './query.js'
 import Component from './component.js'
+import Theme from './theme.js'
 
 export default class App {
   constructor(query, table=null) {
@@ -21,13 +22,13 @@ export default class App {
   //
   // State
 
-  missingState(state) { 
+  addMissingState(state) { 
     this.state = {...state, ...this.state} 
     this.saveState()
   }
 
   addState(state) {
-    this.state = { ...this.state, ...state}
+    this.state = {...this.state, ...state}
     this.saveState()
   }
 
@@ -152,5 +153,22 @@ export default class App {
     if (matchesEquals !== valueMeansVisible) elem.innerHTML = ""
     else if (elseElem) elseElem.innerHTML = ""
     return true
+  }
+
+
+  // Helpers (extrenal)
+
+  // pick a random theme using hue stepping
+  randomizeTheme(contrast=.25, saturation=1) {
+    if (!this.state.theme) throw new Error("randomizeTheme: missing theme in state")
+    // pick a random hue and shift colors over it
+    const hue = Math.random() * 360
+    const brights = Object.keys(this.state.theme.bright)
+    const darks = Object.keys(this.state.theme.dark)
+    const step = 360 / (brights.length + darks.length)
+    // color lights & darks
+    Theme.randomizeBrightsAndDarks(this.state.theme, hue, saturation, contrast, step)
+    console.info(`Theme randomized to ${hue.toFixed(2)} (hue), ${saturation.toFixed(2)} (saturation), ${contrast.toFixed(2)} (contrast)`)
+    this.render()
   }
 }

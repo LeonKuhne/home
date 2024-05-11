@@ -1,36 +1,19 @@
-$primary-font-size: 24px;
-$primary-color: #fee;
-$shadow-color: #433;
-
 body { 
   margin: 0; 
   width: 100vw;
   height: 100vh;
 }
 
-body {
-  background: $shadow-color;
-}
-
-body, input {
-  color: $primary-color;
-  font-size: $primary-font-size;
+input, select, button {
+  background: transparent;
+  border: none;
 }
 
 input {
-  background: transparent;
-  border: none;
-  border-bottom: 1px solid $primary-color;
   width: 100%;
 } input:focus {
   outline: none;
-}
-
-select, button {
-  background: transparent;
-  border: none;
-  border-bottom: 1px solid $primary-color;
-  color: white;
+} select, button {
   cursor: pointer;
 }
 

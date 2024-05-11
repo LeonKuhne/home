@@ -8,6 +8,7 @@ import App from './app.js'
 
 const taskManagerId = 'task-manager'
 const scheduleId = 'calendar'
+const baseTable = '#app-state'
 const welcomeMessages = [
   "Welcome, brave soul!",
   "Greetings, fellow coder!",
@@ -38,7 +39,8 @@ const welcomeMessages = [
   "Welcome to the web!",
   "The code is strong!",
   "Welcome, fellow geek!",
-  "Coding happiness begins!"
+  "Coding happiness begins!",
+  "Try typing 'randomize'!"
 ];
 
 //
@@ -50,6 +52,32 @@ const tableName = params.has('name') ? params.get('name') : undefined
 const app = new App('#app', tableName)
 app.addState({ name: tableName ?? 'Tasks', modal: 'hide' })
 app.define('list-entry', ListEntry)
+
+// load default theme
+const defaultTheme = () => {
+  // use root theme if exists
+  if (tableName) { 
+    const state = localStorage.getItem(baseTable)
+    if (state) {
+      const theme = JSON.parse(state).theme
+      if (theme) return theme
+    }
+  }
+  // use default theme if root 
+  return { 
+      bright: {
+      'primary-color': '#fee',
+      'secondary-color': '#000',
+      'remove-color': 'red',
+    }, dark: {
+      'shadow-color': '#433',
+      'schedule-color': '#557',
+      'highlight-color': '#756',
+    }
+  }
+}
+app.addMissingState({ theme: defaultTheme() })
+
 
 // Select Page
 switch (params.get('page')) {
@@ -73,28 +101,62 @@ switch (params.get('page')) {
   default:
     app.addState({ title: tableName ? `Home | ${tableName}` : "Home" })
     app.define('quarter-hour', QuarterHour)
-    app.missingState({
+    app.addMissingState({
       [scheduleId]: { scrollTop: 0, items: QuarterHour.quarteredDay() },
     })
-
-    // TODO
-    // save scale slider
-    // get rid of state queries (check if unused)
 
     app.onRender(state => {
       const taskManager = document.getElementById(taskManagerId)
       const schedule = document.getElementById(scheduleId)
+      const taskNameInput = taskManager.querySelector('#task-name')
 
-      // randomize the #task-name placeholder with a random welcome message
-      taskManager.querySelector('#task-name').placeholder = welcomeMessages[Math.floor(Math.random() * welcomeMessages.length)]
+      // randomize the welcome message
+      taskNameInput.placeholder = welcomeMessages[Math.floor(Math.random() * welcomeMessages.length)]
+
+      // load saved color theme
+      for (const settings of Object.values(state.theme)) {
+        for (const key in settings) {
+          document.documentElement.style.setProperty(`--${key}`, settings[key])
+        }
+      }
+
+      const randomizeTheme = (contrastMin, contrastMax) => {
+        const toRange = (x, min, max) => min + x * (max - min)
+        let contrast = toRange((toRange(Math.random(), -1, 1) ** 2), 0, 1) // apply parabolic curve centered at .5
+        contrast = toRange(contrast, contrastMin, contrastMax)
+        const saturation = toRange(Math.random(), .2, .5)
+        app.randomizeTheme(contrast, saturation)
+        const elem = document.querySelector('#task-name')
+        elem.value = taskNameInput.value
+        elem.placeholder = "Type 'reset' to clear theme!"
+      }
 
       // task-manager interactions
       taskManager.collectItem(read => {
         const name = read('#task-name')
-        return new Task(name, {
-          id: new String(name.hashCode()),
-          createdAt: new Date().toISOString(),
-        })
+        switch (name) {
+          case 'randomize bright':
+            randomizeTheme(.6, .9)
+            break
+          case 'randomize dark':
+            randomizeTheme(.1, .4)
+            break
+          case 'randomize':
+            randomizeTheme(.1, .9)
+            break;
+          case 'reset':
+            app.state.theme = defaultTheme()
+            app.render()
+            break;
+          case null:
+            break
+          default:
+            return new Task(name, {
+              id: new String(name.hashCode()),
+              createdAt: new Date().toISOString(),
+            })
+        }
+        return null
       })
       taskManager.submitOnEnter('#task-name')
       taskManager.removeOnClick('.task-list .remove')
@@ -147,7 +209,7 @@ switch (params.get('page')) {
       // select space
       document.querySelector('.app-name').addEventListener('click', _ => {
         // show available
-        const keys = [{name: 'Home', url: '/', table: '#app-state'}]
+        const keys = [{name: 'Home', url: '/', table: baseTable}]
         for (let i = 0; i < localStorage.length; i++) {
           let key = localStorage.key(i)
           if (key.endsWith('-state')) continue

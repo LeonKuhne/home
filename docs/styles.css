@@ -4,19 +4,12 @@ body {
   height: 100vh;
 }
 
-body {
-  background: #433;
-}
-
-body, input {
-  color: #fee;
-  font-size: 24px;
+input, select, button {
+  background: transparent;
+  border: none;
 }
 
 input {
-  background: transparent;
-  border: none;
-  border-bottom: 1px solid #fee;
   width: 100%;
 }
 
@@ -25,10 +18,6 @@ input:focus {
 }
 
 select, button {
-  background: transparent;
-  border: none;
-  border-bottom: 1px solid #fee;
-  color: white;
   cursor: pointer;
 }
 
@@ -679,8 +668,37 @@ select, button {
   margin-right: 10rem;
 }
 
+:root {
+  --primary-color: #fee;
+  --secondary-color: #000;
+  --shadow-color: #433;
+  --remove-color: red;
+  --highlight-color: #756;
+  --schedule-color: #557;
+}
+
+body {
+  background: var(--shadow-color);
+}
+
+input {
+  accent-color: var(--schedule-color);
+}
+
+body, input, select, button {
+  color: var(--primary-color);
+}
+
+body, input {
+  font-size: 24px;
+}
+
+input, select, button {
+  border-bottom: 1px solid var(--primary-color);
+}
+
 .remove {
-  color: red;
+  color: var(--remove-color);
   cursor: pointer;
   user-select: none;
 }
@@ -697,7 +715,7 @@ select, button {
 .modal-container .modal {
   min-width: 30vw;
   background: rgba(0, 0, 0, 0.2156862745);
-  color: white;
+  color: var(--primary-color);
   padding: 1rem;
   border-radius: 1rem;
 }
@@ -754,7 +772,7 @@ select, button {
   height: 100%;
 }
 #calendar .schedule {
-  background: #557;
+  background: var(--schedule-color);
   width: 100%;
   top: 0;
   overflow: hidden;
@@ -773,22 +791,17 @@ select, button {
   display: block;
   width: 100%;
   text-align: right;
-  color: rgba(0, 0, 0, 0.5);
+  color: var(--secondary-color);
   white-space: nowrap;
 }
 #calendar .timeslot:not([quarter="0"]) .hour-marker {
   font-size: small;
 }
 #calendar .timeslot.now {
-  background: #756;
+  background: var(--highlight-color);
 }
 #calendar .timeslot.dragtask {
   filter: brightness(1.2);
-}
-
-.stats {
-  background: #575;
-  width: 100%;
 }
 
 /*# sourceMappingURL=styles.css.map */

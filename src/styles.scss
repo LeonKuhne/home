@@ -1,7 +1,40 @@
 @use 'prototypes/base';
 
+// dynamic
+:root { 
+  --primary-color: #fee; // bright text color 
+  --secondary-color: #000; // dark text color 
+  --shadow-color: #433;
+  --remove-color: red;
+  --highlight-color: #756;
+  --schedule-color: #557;
+}
+
+// aliases
+$primary-color: var(--primary-color);
+$secondary-color: var(--secondary-color); 
+$shadow-color: var(--shadow-color);
+$remove-color: var(--remove-color);
+$highlight-color: var(--highlight-color);
+$schedule-color: var(--schedule-color);
+
+// static
+$primary-font-size: 24px;
+
+body { 
+  background: $shadow-color; 
+} input {
+  accent-color: $schedule-color;
+} body, input, select, button {
+  color: $primary-color;
+} body, input {
+  font-size: $primary-font-size;
+} input, select, button {
+  border-bottom: 1px solid $primary-color;
+} 
+
 .remove {
-  color: red;
+  color: $remove-color;
   cursor: pointer;
   user-select: none;
 }
@@ -15,7 +48,7 @@
   .modal {
     min-width: 30vw;
     background: #00000037;
-    color: white;
+    color: $primary-color;
     padding: 1rem;
     border-radius: 1rem;
     .title {
@@ -69,7 +102,7 @@
   overflow-y: scroll;
   height: 100%;
   .schedule {
-    background: #557;
+    background: $schedule-color;
     width: 100%;
     top: 0;
     overflow: hidden;
@@ -85,7 +118,7 @@
       display: block;
       width: 100%;
       text-align: right;
-      color: rgba($color: #000000, $alpha: 0.5);
+      color: $secondary-color;
       white-space: nowrap;
     }
   // enlarge hour markers
@@ -93,14 +126,9 @@
     font-size: small;
   // highlight current time
   } .timeslot.now {
-    background: #756
+    background: $highlight-color; 
   // hihlight quarter hour on drag over
   } .timeslot.dragtask {
     filter: brightness(1.2);
   }
-}
-
-.stats{
-  background: #575;
-  width: 100%;
 }
