@@ -28,7 +28,7 @@ export default class QuarterHour extends Component {
     if (Timeslot.equals(this.state, Timeslot.now())) {
       this.highlightTimeslot()
     } else {
-      const timeUntilStarts = this.state.date - Date.now()
+      const timeUntilStarts = this.state.time - Date.now()
       if (timeUntilStarts < 0) return // previous timeslots
       setTimeout(() => this.highlightTimeslot(), timeUntilStarts)
     }
@@ -39,7 +39,7 @@ export default class QuarterHour extends Component {
   highlightTimeslot() { // tested and working
     const elem = document.getElementById(this.state.timestr)
     if (!elem) return
-    let timeRemaining = Timeslot.next(this.state).date - Date.now()
+    let timeRemaining = Timeslot.next(this.state).time - Date.now()
     elem.classList.add('now')
     setTimeout(() => elem.classList.remove('now'), timeRemaining)
   }

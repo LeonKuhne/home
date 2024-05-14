@@ -158,6 +158,14 @@ export default class App {
 
   // Helpers (extrenal)
 
+  randomizeTheme(contrastMin, contrastMax) {
+    const toRange = (x, min, max) => min + x * (max - min)
+    let contrast = toRange((toRange(Math.random(), -1, 1) ** 2), 0, 1) // apply parabolic curve centered at .5
+    contrast = toRange(contrast, contrastMin, contrastMax)
+    const saturation = toRange(Math.random(), .2, .5)
+    this.randomizeTheme(contrast, saturation)
+  }
+
   // pick a random theme using hue stepping
   randomizeTheme(contrast=.25, saturation=1) {
     if (!this.state.theme) throw new Error("randomizeTheme: missing theme in state")

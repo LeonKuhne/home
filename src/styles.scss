@@ -8,6 +8,7 @@
   --remove-color: red;
   --highlight-color: #756;
   --schedule-color: #557;
+  --stats-color: #462;
 }
 
 // aliases
@@ -17,6 +18,7 @@ $shadow-color: var(--shadow-color);
 $remove-color: var(--remove-color);
 $highlight-color: var(--highlight-color);
 $schedule-color: var(--schedule-color);
+$stats-color: var(--stats-color);
 
 // static
 $primary-font-size: 24px;
@@ -130,5 +132,29 @@ body {
   // hihlight quarter hour on drag over
   } .timeslot.dragtask {
     filter: brightness(1.2);
+  }
+}
+
+#stats  {
+  height: 0;
+  .graph {
+    background: $stats-color;
+    #mermaid {
+      margin: auto;
+      display: block;
+      span {
+        color: $secondary-color !important;
+      } .node rect {
+        stroke: $primary-color;
+        fill: $highlight-color;
+      } .flowchart-link {
+        stroke: $secondary-color;
+      } #mermaid_flowchart-pointEnd {
+        stroke: $secondary-color;
+        fill: $highlight-color;
+      }
+    }
+  } .graph:empty {
+    display: none;
   }
 }

@@ -675,6 +675,7 @@ select, button {
   --remove-color: red;
   --highlight-color: #756;
   --schedule-color: #557;
+  --stats-color: #462;
 }
 
 body {
@@ -802,6 +803,34 @@ input, select, button {
 }
 #calendar .timeslot.dragtask {
   filter: brightness(1.2);
+}
+
+#stats {
+  height: 0;
+}
+#stats .graph {
+  background: var(--stats-color);
+}
+#stats .graph #mermaid {
+  margin: auto;
+  display: block;
+}
+#stats .graph #mermaid span {
+  color: var(--secondary-color) !important;
+}
+#stats .graph #mermaid .node rect {
+  stroke: var(--primary-color);
+  fill: var(--highlight-color);
+}
+#stats .graph #mermaid .flowchart-link {
+  stroke: var(--secondary-color);
+}
+#stats .graph #mermaid #mermaid_flowchart-pointEnd {
+  stroke: var(--secondary-color);
+  fill: var(--highlight-color);
+}
+#stats .graph:empty {
+  display: none;
 }
 
 /*# sourceMappingURL=styles.css.map */
