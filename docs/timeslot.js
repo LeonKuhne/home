@@ -4,13 +4,13 @@ export default class Timeslot {
     this.quarter = quarter
     this.task = null
     this.duration = 15
-    this.update(new Date())
+    Timeslot.update(this, new Date())
   }
 
-  update(date) {
-    date.setHours(this.hour, this.quarter * 15) 
-    this.timestr = date.toLocaleTimeString('en-US', { hour: 'numeric', hour12: true, minute: '2-digit' })
-    this.time = date.getTime()
+  static update(timeslot, date) {
+    date.setHours(timeslot.hour, timeslot.quarter * 15) 
+    timeslot.timestr = date.toLocaleTimeString('en-US', { hour: 'numeric', hour12: true, minute: '2-digit' })
+    timeslot.time = date.getTime()
   }
 
   static now() {
