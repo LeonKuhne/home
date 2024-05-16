@@ -8,15 +8,18 @@ export default class Analytics {
     this.app = app
     this.history = this.app.state[statsId]
     this.schedule = this.app.state[scheduleId].items
+    this.scheduleTasks = this.schedule.filter(item => item.task)
+
+    // TEMP cleanup all of the empty tasks in history
+    this.app.state[statsId] = this.app.state[statsId].filter(item => item.task)
+    this.app.saveState()
+
     this.saveHistory()
     this.setupAnalytics()
   }
 
   async setupAnalytics() {
-    this.completeHistory = [ 
-      ...this.history.filter(item => item.task),
-      ...this.schedule.filter(item => item.task)
-    ]
+    this.completeHistory = [...this.history.filter(item => item.task), ...this.scheduleTasks]
     if (this.completeHistory.length < 2) return
     try {
       let {svg} = await mermaid.render('mermaid', this.encodeScheduleToMermaidGraph(this.completeHistory))
@@ -61,7 +64,7 @@ export default class Analytics {
     // schedule is older than today
     if (this.schedule[0].time > new Date().setHours(0, 0, 0, 0)) return
     // update history
-    this.app.state[this.statsId].push(...this.schedule)
+    this.app.state[this.statsId].push(...this.scheduleTasks)
     this.moveScheduleToToday()
     this.app.saveState()
   }
