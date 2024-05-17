@@ -95,5 +95,5 @@ switch (params.get('page')) {
     app.define('quarter-hour', QuarterHour)
     app.addMissingState({[scheduleId]: { scrollTop: 0, items: QuarterHour.quarteredDay() }})
     app.addMissingState({[statsId]: []})
-    app.onRender(_ => new TaskManager(baseTable, tableName, taskManagerId, scheduleId, statsId, app, welcomeMessages))
+    app.onRender(_ => new TaskManager(baseTable, tableName, taskManagerId, scheduleId, statsId, app, welcomeMessages, defaultTheme))
 }

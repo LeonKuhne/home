@@ -9,11 +9,6 @@ export default class Analytics {
     this.history = this.app.state[statsId]
     this.schedule = this.app.state[scheduleId].items
     this.scheduleTasks = this.schedule.filter(item => item.task)
-
-    // TEMP cleanup all of the empty tasks in history
-    this.app.state[statsId] = this.app.state[statsId].filter(item => item.task)
-    this.app.saveState()
-
     this.saveHistory()
     this.setupAnalytics()
   }
