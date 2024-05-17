@@ -1,5 +1,6 @@
 import Timeslot from './timeslot.js'
 import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10.9.1/+esm'
+import Graph from './graph.js'
 
 export default class Analytics {
   constructor(scheduleId, statsId, app) {
@@ -16,6 +17,10 @@ export default class Analytics {
   async setupAnalytics() {
     this.completeHistory = [...this.history.filter(item => item.task), ...this.scheduleTasks]
     if (this.completeHistory.length < 2) return
+    // render the physics statechart
+    const graph = new Graph(this.completeHistory.map(item => item.task.name))
+    this.app.addMissingState({'task-graph': graph.nodes}) // TODO update the graph instead of adding missing, but only update it when the graph changes
+    // render the mermaid graph
     try {
       let {svg} = await mermaid.render('mermaid', this.encodeScheduleToMermaidGraph(this.completeHistory))
       document.body.querySelector('.graph').innerHTML = svg

@@ -156,5 +156,13 @@ body {
     }
   } .graph:empty {
     display: none;
+  } .sim {
+    border: 1px solid $primary-color;
+  } .node {
+    background: $highlight-color;
+    color: $secondary-color;
+    border: 1px solid $primary-color;
+    padding: .5rem;
+    font-size: smaller;
   }
 }

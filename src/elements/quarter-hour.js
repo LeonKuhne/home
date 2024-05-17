@@ -23,6 +23,7 @@ export default class QuarterHour extends Component {
   }
 
   setState() {}
+  destroyState() {}
 
   renderedState() {
     if (Timeslot.equals(this.state, Timeslot.now())) {
@@ -37,6 +38,7 @@ export default class QuarterHour extends Component {
   }
 
   highlightTimeslot() { // tested and working
+    if (!this.alive) return
     const elem = document.getElementById(this.state.timestr)
     if (!elem) return
     let timeRemaining = Timeslot.next(this.state).time - Date.now()

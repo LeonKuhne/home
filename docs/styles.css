@@ -832,5 +832,15 @@ input, select, button {
 #stats .graph:empty {
   display: none;
 }
+#stats .sim {
+  border: 1px solid var(--primary-color);
+}
+#stats .node {
+  background: var(--highlight-color);
+  color: var(--secondary-color);
+  border: 1px solid var(--primary-color);
+  padding: 0.5rem;
+  font-size: smaller;
+}
 
 /*# sourceMappingURL=styles.css.map */

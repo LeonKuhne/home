@@ -3,19 +3,30 @@
 // also would be nice to make an AppElement instead of overriding the html element prototypes, and dumping all that shit in one file
 
 export default class Component extends HTMLElement {
-  static requiredProperties = ['id', 'initState', 'createState', 'setState', 'renderedState']
+
+  //
+  // Global Registration
+
+  static requiredProperties = ['id', 'initState', 'createState', 'setState', 'renderedState', 'destroyState']
   static registrations = {} // [TAG-NAME]: [ ...{ app, instances } ]
 
+  static getRegistrationKey(tagName) {return tagName.toUpperCase()}
   static registerWithApp(tagName, app) {
-    const key = tagName.toUpperCase()
+    const key = this.getRegistrationKey(tagName)
     if (!Component.registrations[key]) Component.registrations[key] = []
     Component.registrations[key].push({ app, instances: [] })
     customElements.define(tagName, this)
   }
 
-  registerInstanceWithApp() {
-    for (let {instances} of Object.values(Component.registrations[this.tagName])) {
-      instances.push(this)
+  // Local Registration
+
+  get registrationKey() { return Component.getRegistrationKey(this.tagName) }
+  get registeredApps() { return Component.registrations[this.registrationKey] }
+  get registeredInstances() { return Object.values(this.registeredApps).map(({instances}) => instances) }
+  register() { for (let instances of this.registeredInstances) instances.push(this) }
+  unregister() {
+    for (let instances of this.registeredInstances) {
+      instances.splice(instances.indexOf(this), 1)
     }
   }
 
@@ -29,9 +40,10 @@ export default class Component extends HTMLElement {
   }
 
   connectedCallback() { 
+    this.alive = true
     this.requireProperties()
     this.initState()
-    this.registerInstanceWithApp()
+    this.register()
     for (let app of this.apps) {
       // fill data
       if (app.state.hasOwnProperty(this.id)) {
@@ -43,9 +55,14 @@ export default class Component extends HTMLElement {
     this.updateTemplate(false)
   }
 
-  disconnectCallback() { if (this.registerWithTemplate) this.unregister() } 
+  disconnectedCallback() { 
+    this.alive = false
+    this.destroyState()
+    if (this.registerWithTemplate) this.unregister() 
+  } 
 
-  // update state and redraw
+  // 
+  // Inheritance Validation
 
   requireProperties() { 
     const missing = []
@@ -68,6 +85,15 @@ export default class Component extends HTMLElement {
       if (this.registerWithTemplate) app.addState(this.globalState())
       if (render) app.render()
     }
+  }
+
+  //
+  // Busy Loops
+
+  whileAlive(delay, callback) {
+    if (!this.alive) return
+    callback()
+    setTimeout(() => this.whileAlive(delay, callback), delay)
   }
 
   //

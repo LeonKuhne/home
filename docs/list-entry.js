@@ -16,8 +16,8 @@ export default class ListEntry extends Component {
     this.state = { items: [], scrollTop: 0 }
   }
 
-  setState() {
-  }
+  setState() {}
+  destroyState() {}
 
   renderedState() {
     this.scrollTop = this.state.scrollTop

@@ -46,13 +46,15 @@ export default class App {
     console.info(`${this.name} rendering`)
     const focusedElementId = document.activeElement?.id
     // reset components
-    this.root.innerHTML = this.template
+    // create an offline root to avoid connectedCallback
+    const tempRoot = document.createElement('div')
+    tempRoot.innerHTML = this.template
     // apply attributes
     // TODO make .for and .if their own components
-    this.root.querySelectorAll('.for').forEach(elem => this.iterate(elem))
-    this.root.querySelectorAll('.if').forEach(elem => this.applyVisibility(elem))
+    tempRoot.querySelectorAll('.for').forEach(elem => this.iterate(elem))
+    tempRoot.querySelectorAll('.if').forEach(elem => this.applyVisibility(elem))
     // replace variables
-    this.fill(this.state)
+    this.root.innerHTML = this.fill(tempRoot)
     // update focus
     if (focusedElementId) this.root.querySelector('#'+focusedElementId)?.focus()
     // render callbacks
@@ -66,15 +68,15 @@ export default class App {
   //
   // Fill Queries
 
-  fill() {
-    let html = this.root.innerHTML
+  fill(elem) {
+    let html = elem.innerHTML
     Object.keys(this.state).forEach(key => {
       html = html.replace(new RegExp(`\\$${key}[^!=\\s|\\<|\\"]*`, 'g'), (match) => {
         const fillValue = new Query(match).read(this.state)
         return fillValue
       })
     })
-    this.root.innerHTML = html
+    return html
   }
 
   //

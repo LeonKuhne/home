@@ -4,6 +4,7 @@ import ListEntry from './list-entry.js'
 import QuarterHour from './quarter-hour.js'
 import App from './app.js'
 import TaskManager from './task-manager.js'
+import PhysicsStatechart from './physics-statechart.js'
 
 const taskManagerId = 'task-manager'
 const scheduleId = 'calendar'
@@ -93,6 +94,7 @@ switch (params.get('page')) {
   default:
     app.addState({ title: tableName ? `Home | ${tableName}` : "Home" })
     app.define('quarter-hour', QuarterHour)
+    app.define('physics-statechart', PhysicsStatechart)
     app.addMissingState({[scheduleId]: { scrollTop: 0, items: QuarterHour.quarteredDay() }})
     app.addMissingState({[statsId]: []})
     app.onRender(_ => new TaskManager(baseTable, tableName, taskManagerId, scheduleId, statsId, app, welcomeMessages, defaultTheme))
