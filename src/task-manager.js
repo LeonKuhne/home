@@ -5,11 +5,12 @@ import Analytics from './analytics.js'
 
 export default class TaskManager {
 
-  constructor(baseTable, tableName, taskManagerId, scheduleId, statsId, app, welcomeMessages=[]) {
+  constructor(baseTable, tableName, taskManagerId, scheduleId, statsId, app, welcomeMessages=[], defaultTheme={}) {
     this.taskManagerId = taskManagerId
     this.scheduleId = scheduleId
     this.app = app
     this.welcomeMessages = welcomeMessages
+    this.defaultTheme = defaultTheme
     // elements
     this.taskManager = document.getElementById(taskManagerId)
     this.taskNameInput = this.taskManager.querySelector('#task-name')
@@ -50,7 +51,7 @@ export default class TaskManager {
           this.randomizeTheme(.1, .9)
           break;
         case 'reset':
-          this.app.state.theme = defaultTheme()
+          this.app.state.theme = this.defaultTheme()
           this.app.render()
           break;
         case null:
