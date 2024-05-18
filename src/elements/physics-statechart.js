@@ -12,25 +12,16 @@ export default class PhysicsStatechart extends ListEntry {
 
   initState() {
     super.initState()
-    this.addEventListener('resize', () => {
-      this.updateBounds()
-      for (const elem of this.boundUpdateElements) elem.updateBounds(bounds)
-    })
   }
 
   renderedState() {
     super.renderedState()
-    this.updateBounds()
     for (const node of this.state) {
       const elem = this.nodeElem(node.id)
-      elem.updateBounds(this.bounds)
-      elem.repel(...this.findStrangers(node))
-      this.boundUpdateElements.push(elem)
+      elem.repel(() => this.getBoundingClientRect(), ...this.findStrangers(node))
       // update all of the edge bounds
       elem.querySelectorAll('line-connector').forEach(connector => {
-        connector.updateBounds(this.bounds)
         connector.trackElements()
-        this.boundUpdateElements.push(connector)
       })
     }
   }
@@ -50,8 +41,4 @@ export default class PhysicsStatechart extends ListEntry {
 
   // TODO might need to make name have spaces joined by dash
   nodeElem(id) { return this.querySelector(`#node-${id}`) }
-
-  updateBounds() {
-    this.bounds = this.getBoundingClientRect()
-  }
 }

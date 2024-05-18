@@ -26,8 +26,6 @@ export default class LineConnector extends Component {
     this.whileAlive(this.updateInterval, () => this.updatePosition())
   }
 
-  updateBounds(bounds) { this.bounds = bounds }
-
   //
   // helpers
 
@@ -35,26 +33,33 @@ export default class LineConnector extends Component {
     return document.getElementById('node-' + this.getAttribute(attributeName))
   }
 
-  nodePos(elem) {
-    const rect = elem.getBoundingClientRect()
+  nodePos(rect) {
     const pos = {
-      x: this.bounds.x - rect.x - rect.width / 2 - window.scrollX,
-      y: this.bounds.y - rect.y - rect.height / 2 - window.scrollY
+      x: rect.x - window.scrollX + rect.width / 2,
+      y: rect.y - window.scrollY + rect.height / 2
     }
     return pos
   }
 
+  nodeAnchor(elem) {
+  }
+
   updatePosition() {
-    const pos = this.nodePos(this.fromElem)
-    const target = this.nodePos(this.toElem, true)
-    // find target edge offset
-    // if the x delta is greater than the y delta, add the rect_width
-    // if the y delta is greater than the x delta, add the rect_height
-    const delta = {
-      x: pos.x - target.x,
-      y: pos.y - target.y
+    const pos = this.nodePos(this.fromElem.getBoundingClientRect())
+    const toRect = this.toElem.getBoundingClientRect()
+    const target = this.nodePos(toRect)
+    const delta = { x: target.x - pos.x, y: target.y - pos.y }
+    const hasBiggerX = Math.abs(delta.x) > Math.abs(delta.y)
+    // fix anchor offset
+    if (hasBiggerX) { // x is greater than y
+      let offset = toRect.width / 2
+      if (delta.x < 0) offset = -offset
+      delta.x -= offset 
+    } else { // y is greater than x
+      let offset = toRect.height/ 2
+      if (delta.y < 0) offset = -offset
+      delta.y -= offset
     }
-    console.log(`delta: ${delta.x},${delta.y}`)
     this.path.setAttribute('d', `M0,0 L${delta.x},${delta.y}`)
   }
 }

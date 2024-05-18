@@ -1,7 +1,7 @@
 import Component from './component.js'
 
 export default class ParticleElement extends Component {
-  constructor(fps=24, reactDistance=200) {
+  constructor(fps=24, reactDistance=500) {
     super()
     this.updateInterval = 1000 / fps
     this.reactDistance = reactDistance
@@ -24,7 +24,8 @@ export default class ParticleElement extends Component {
   // actions
 
   // note: particles update independently of each-other
-  repel(...elements) { 
+  repel(containerBounds, ...elements) { 
+    this.containerBounds = containerBounds
     this.strangerElements = elements 
     this.whileAlive(this.updateInterval, () => {
       this.repelStrangers()
@@ -32,12 +33,6 @@ export default class ParticleElement extends Component {
     })
   }
 
-  updateBounds(bounds) { 
-    this.bounds = { 
-      halfWidth: bounds.width / 2,
-      halfHeight: bounds.height / 2
-    }
-  }
 
   //
   // helpers
@@ -45,10 +40,15 @@ export default class ParticleElement extends Component {
   updatePosition() { 
     this.style.left = `${this.state.x}px`
     this.style.top = `${this.state.y}px`
-    this.nameElem.textContent = `${this.name}: ${this.state.x.toFixed(4)}, ${this.state.y.toFixed(4)}`
   }
 
   repelStrangers() {
+    const rect = this.getBoundingClientRect()
+    const bounds = this.containerBounds()
+    const leftLimit   = -bounds.width  / 2 + rect.width  / 2
+    const rightLimit  =  bounds.width  / 2 - rect.width  / 2
+    const topLimit    = -bounds.height / 2 + rect.height / 2
+    const bottomLimit =  bounds.height / 2 - rect.height / 2
     for (const other of this.strangerElements) {
       // repel the other particle-element
       const dx = this.state.x - other.state.x
@@ -59,10 +59,10 @@ export default class ParticleElement extends Component {
         this.state.x += dx / distance
         this.state.y += dy / distance
         // check boundaries
-        if (this.state.x < -this.bounds.halfWidth) this.state.x = -this.bounds.halfWidth
-        else if (this.state.x > this.bounds.halfWidth) this.state.x = this.bounds.halfWidth
-        if (this.state.y < -this.bounds.halfHeight) this.state.y = -this.bounds.halfHeight
-        else if (this.state.y > this.bounds.halfHeight) this.state.y = this.bounds.halfHeight
+        if      (this.state.x < leftLimit) this.state.x = leftLimit
+        else if (this.state.x > rightLimit) this.state.x = rightLimit
+        if      (this.state.y < topLimit) this.state.y = topLimit
+        else if (this.state.y > bottomLimit) this.state.y = bottomLimit
       }
     }
   }
