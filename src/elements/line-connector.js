@@ -37,14 +37,16 @@ export default class LineConnector extends Component {
 
   nodePos(elem) {
     const rect = elem.getBoundingClientRect()
-    // return center of element
-    return { x: this.bounds.x - rect.x + rect.width / 2, y: this.bounds.y - rect.y + rect.height / 2 }
+    return { 
+      x: this.bounds.x - rect.x - rect.width / 2 - window.scrollX,
+      y: this.bounds.y - rect.y - rect.height / 2 - window.scrollY
+    }
   }
 
   updatePosition() {
     const pos = this.nodePos(this.fromElem)
     const target = this.nodePos(this.toElem)
     console.log(`${pos.x},${pos.y} -> ${target.x},${target.y}`)
-    this.path.setAttribute('d', `M${pos.x},${pos.y} L${target.x},${target.y}`)
+    this.path.setAttribute('d', `M0,0 L${pos.x-target.x},${pos.y-target.y}`)
   }
 }

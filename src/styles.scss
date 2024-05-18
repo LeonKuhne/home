@@ -162,10 +162,15 @@ body {
     display: none;
   } #task-graph {
     transform: translate(50%, 50%);
-    .line {
+    .lines {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+    } .line {
       left: 0;
-    }.node {
-      background: $highlight-color;
+      overflow: visible;
+    } particle-element {
+      //background: $highlight-color;
       color: $secondary-color;
       border: 1px solid $primary-color;
       padding: .5rem;

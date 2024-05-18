@@ -1,7 +1,7 @@
 import Component from './component.js'
 
 export default class ParticleElement extends Component {
-  constructor(fps=24, reactDistance=100) {
+  constructor(fps=24, reactDistance=200) {
     super()
     this.updateInterval = 1000 / fps
     this.reactDistance = reactDistance
@@ -12,7 +12,8 @@ export default class ParticleElement extends Component {
 
   initState() {
     this.state = { x: this.randomNormal(), y: this.randomNormal() }
-    this.name = this.querySelector('.name').textContent
+    this.nameElem = this.querySelector('.name')
+    this.name = this.nameElem.textContent
   }
   createState() {}
   setState() {}
@@ -44,7 +45,7 @@ export default class ParticleElement extends Component {
   updatePosition() { 
     this.style.left = `${this.state.x}px`
     this.style.top = `${this.state.y}px`
-    this.textContent = `${this.name}: ${this.state.x.toFixed(4)}, ${this.state.y.toFixed(4)}`
+    this.nameElem.textContent = `${this.name}: ${this.state.x.toFixed(4)}, ${this.state.y.toFixed(4)}`
   }
 
   repelStrangers() {

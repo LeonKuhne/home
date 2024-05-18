@@ -839,11 +839,16 @@ input, select, button {
 #stats #task-graph {
   transform: translate(50%, 50%);
 }
+#stats #task-graph .lines {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+}
 #stats #task-graph .line {
   left: 0;
+  overflow: visible;
 }
-#stats #task-graph .node {
-  background: var(--highlight-color);
+#stats #task-graph particle-element {
   color: var(--secondary-color);
   border: 1px solid var(--primary-color);
   padding: 0.5rem;
