@@ -1,9 +1,12 @@
 import Timeslot from './timeslot.js'
 import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10.9.1/+esm'
+import Graph from './graph.js'
+
 export default class Analytics {
-  constructor(scheduleId, statsId, app) {
+  constructor(scheduleId, statsId, statGraphId, app) {
     this.scheduleId = scheduleId
     this.statsId = statsId
+    this.statGraphId = statGraphId
     this.app = app
     this.history = this.app.state[statsId]
     this.schedule = this.app.state[scheduleId].items
@@ -12,8 +15,19 @@ export default class Analytics {
     this.setupAnalytics()
   }
 
-  async setupAnalytics() {
+  setupAnalytics() {
     this.completeHistory = [...this.history.filter(item => item.task), ...this.scheduleTasks]
+    // custom graph
+    this.setupMermaidGraph()
+    const graph = new Graph(
+      this.completeHistory
+        .filter(item => item.task)
+        .map(item => item.task.name))
+    //this.app.state[this.statGraphId] = graph.asList()
+    document.getElementById(this.statGraphId).soloRender(graph.asList())
+  }
+
+  async setupMermaidGraph() {
     // render the mermaid graph
     if (this.completeHistory.length < 2) return
     try {

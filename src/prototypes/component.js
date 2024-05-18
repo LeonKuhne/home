@@ -79,11 +79,20 @@ export default class Component extends HTMLElement {
   // Update Template
 
   globalState() { return { [this.id]: this.state } }
-  // TODO only rerender this component not the whole app
+
+  // TODO only rerender this component not the whole app, ie use soloRender
   updateTemplate(render=true) {
     for (let app of this.apps) {
       if (this.registerWithTemplate) app.addState(this.globalState())
       if (render) app.render()
+    }
+  }
+
+  soloRender(state) { 
+    this.state = state
+    this.updateTemplate(false)
+    for (let app of this.apps) {
+      app.soloRender(this.id) 
     }
   }
 

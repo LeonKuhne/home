@@ -54,9 +54,24 @@ export default class App {
     Component.renderLate(this)
   }
 
-  applyVars() {
+  soloRender(componentId) {
+    // only render one element
+    console.info(`${componentId} rendering`)
+    const elem = this.root.querySelector('#'+componentId)
+    elem.innerHTML = this.applyVars(componentId)
+    // for all of the components that were modified, render late them
+    elem.renderedState()
+    for (const instance of Component.appInstances(this)) {
+      // if this is contained within the element inner html
+      if (!elem.contains(instance)) continue
+      instance.renderedState()
+    }
+  }
+
+  applyVars(elemId=null) {
     const tempRoot = document.createElement('div')
     tempRoot.innerHTML = this.template
+    if (elemId) tempRoot.innerHTML = tempRoot.querySelector('#'+elemId).innerHTML
     while (this.applyVarIteration(tempRoot)) {}
     return tempRoot.innerHTML
   }

@@ -5,7 +5,7 @@ import Analytics from './analytics.js'
 
 export default class TaskManager {
 
-  constructor(baseTable, tableName, taskManagerId, scheduleId, statsId, app, welcomeMessages=[], defaultTheme={}) {
+  constructor(baseTable, tableName, taskManagerId, scheduleId, statsId, statGraphId, app, welcomeMessages=[], defaultTheme={}) {
     this.taskManagerId = taskManagerId
     this.scheduleId = scheduleId
     this.app = app
@@ -20,7 +20,7 @@ export default class TaskManager {
     this.setupTaskList()
     new Schedule(taskManagerId, scheduleId, app)
     new SpaceNavigation(baseTable, tableName, app)
-    new Analytics(scheduleId, statsId, app)
+    new Analytics(scheduleId, statsId, statGraphId, app)
     this.taskNameInput.focus()
   }
 
