@@ -1,5 +1,5 @@
 import Timeslot from './timeslot.js'
-//import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10.9.1/+esm'
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10.9.1/+esm'
 export default class Analytics {
   constructor(scheduleId, statsId, app) {
     this.scheduleId = scheduleId
@@ -16,14 +16,12 @@ export default class Analytics {
     this.completeHistory = [...this.history.filter(item => item.task), ...this.scheduleTasks]
     // render the mermaid graph
     if (this.completeHistory.length < 2) return
-    /*
     try {
       let {svg} = await mermaid.render('mermaid', this.encodeScheduleToMermaidGraph(this.completeHistory))
       document.body.querySelector('.graph').innerHTML = svg
     } catch (e) {
       console.warn('Mermaid trembles')
     }
-    */
   }
 
   //
