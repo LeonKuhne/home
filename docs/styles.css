@@ -808,6 +808,10 @@ input, select, button {
 #stats {
   height: 0;
 }
+#stats .sim {
+  min-height: 10rem;
+  border: 1px solid var(--primary-color);
+}
 #stats .graph {
   background: var(--stats-color);
 }
@@ -832,15 +836,19 @@ input, select, button {
 #stats .graph:empty {
   display: none;
 }
-#stats .sim {
-  border: 1px solid var(--primary-color);
+#stats #task-graph {
+  transform: translate(50%, 50%);
 }
-#stats .node {
+#stats #task-graph .line {
+  left: 0;
+}
+#stats #task-graph .node {
   background: var(--highlight-color);
   color: var(--secondary-color);
   border: 1px solid var(--primary-color);
   padding: 0.5rem;
   font-size: smaller;
+  transform: translate(-50%, -50%);
 }
 
 /*# sourceMappingURL=styles.css.map */

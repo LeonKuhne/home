@@ -1,53 +1,57 @@
-import Component from './component.js';
+import ListEntry from './list-entry.js'
 
-export default class PhysicsStatechart extends Component {
-  constructor(fps=24) {
+export default class PhysicsStatechart extends ListEntry {
+  constructor(tps=24) {
     super()
-    this.updateInterval = 1000 / fps
+    this.updateInterval = 1000 / tps
+    this.boundUpdateElements = []
   }
 
+  //
   // lifecycle
 
   initState() {
-    this.nodeElements = {}
+    super.initState()
+    this.addEventListener('resize', () => {
+      this.updateBounds()
+      for (const elem of this.boundUpdateElements) elem.updateBounds(bounds)
+    })
   }
 
-  createState() {}
-  setState() {}
   renderedState() {
-    // TODO render the graph
-    // this.state has format: [ {[name]: {parents: [], children: []}} ]
-    console.log("todo")
-
-    // create the node elements from the state
-    for (const name of Object.keys(this.state)) {
-      this.addNodeElement(name)
+    super.renderedState()
+    this.updateBounds()
+    for (const node of this.state) {
+      const elem = this.nodeElem(node.id)
+      elem.updateBounds(this.bounds)
+      elem.repel(...this.findStrangers(node))
+      this.boundUpdateElements.push(elem)
+      // update all of the edge bounds
+      elem.querySelectorAll('line-connector').forEach(connector => {
+        connector.updateBounds(this.bounds)
+        connector.trackElements()
+        this.boundUpdateElements.push(connector)
+      })
     }
-
-    // tick simulation
-    this.whileAlive(this.updateInterval, () => this.simulate())
   }
-
-  destroyState() {}
 
   //
-  // simulation
-
-  simulate() {
-    // while this element exists
-    console.log("simulating")
-  }
-
   // helpers
 
-  addNodeElement(name) {
-    const nodeElem = document.createElement('div')
-    nodeElem.classList.add('node')
-    nodeElem.textContent = name
-    // center elem
-    nodeElem.style.position = 'absolute'
-    nodeElem.style.transform = 'translate(-50%, -50%)'
-    this.appendChild(nodeElem)
-    this.nodeElements[name] = nodeElem
+  // find all elements that arent you or your children
+  findStrangers(node) {
+    const strangers = []
+    for (const {id, name} of this.state) {
+      if (node.name === name || node.children.includes(name)) continue
+      strangers.push(this.nodeElem(id))
+    }
+    return strangers
+  }
+
+  // TODO might need to make name have spaces joined by dash
+  nodeElem(id) { return this.querySelector(`#node-${id}`) }
+
+  updateBounds() {
+    this.bounds = this.getBoundingClientRect()
   }
 }

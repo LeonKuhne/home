@@ -45,22 +45,38 @@ export default class App {
   render() {
     console.info(`${this.name} rendering`)
     const focusedElementId = document.activeElement?.id
-    // reset components
-    // create an offline root to avoid connectedCallback
-    const tempRoot = document.createElement('div')
-    tempRoot.innerHTML = this.template
-    // apply attributes
-    // TODO make .for and .if their own components
-    tempRoot.querySelectorAll('.for').forEach(elem => this.iterate(elem))
-    tempRoot.querySelectorAll('.if').forEach(elem => this.applyVisibility(elem))
-    // replace variables
-    this.root.innerHTML = this.fill(tempRoot)
+    this.root.innerHTML = this.applyVars()
     // update focus
     if (focusedElementId) this.root.querySelector('#'+focusedElementId)?.focus()
     // render callbacks
     for (let callback of this.renderCallbacks) callback(this.state)
     // render components
     Component.renderLate(this)
+  }
+
+  applyVars() {
+    const tempRoot = document.createElement('div')
+    tempRoot.innerHTML = this.template
+    while (this.applyVarIteration(tempRoot)) {}
+    return tempRoot.innerHTML
+  }
+
+  applyVarIteration(tempRoot) {
+    let hasChanged = false
+    // .for
+    for (let elem of tempRoot.querySelectorAll('.for')) {
+      hasChanged = this.iterate(elem) || hasChanged
+    }
+    console.log("for changed it", hasChanged)
+    // .if
+    for (let elem of tempRoot.querySelectorAll('.if')) {
+      hasChanged = this.applyVisibility(elem) || hasChanged
+    }
+    console.log("if changed it", hasChanged)
+    // $var
+    hasChanged = this.fill(tempRoot)
+    console.log("fill changed it", hasChanged)
+    return hasChanged
   }
 
   onRender(callback) { this.renderCallbacks.push(callback) }
@@ -70,20 +86,24 @@ export default class App {
 
   fill(elem) {
     let html = elem.innerHTML
+    let hasChanged = false
     Object.keys(this.state).forEach(key => {
       html = html.replace(new RegExp(`\\$${key}[^!=\\s|\\<|\\"]*`, 'g'), (match) => {
         const fillValue = new Query(match).read(this.state)
+        if (typeof fillValue === 'object') return match // dont fill objects only raw values
+        if (!hasChanged) hasChanged = true
         return fillValue
       })
     })
-    return html
+    if (hasChanged) elem.innerHTML = html
+    return hasChanged
   }
 
   //
   // Iterables
   //
   // usage
-  //   <elem class="for" list="$query">[repeat content]</elem>
+  //   <elem class="for" list="$query" as="item">[repeat content]</elem>
   // 
   // TODO can .for and .if be made into modules?
 
@@ -91,17 +111,19 @@ export default class App {
     // retrieve items
     const attrName = elem.popAttribute('list')
     const query = new Query(attrName)
-    if (!query.isValid(this.state)) { console.warn(`template failed iterating ${attrName}: missing from state`); return }
+    if (!query.isValid(this.state)) { console.warn(`template failed iterating ${attrName}: missing from state`); return false }
     const items = query.read(this.state)
+    const varName = elem.getAttribute('as') ?? 'item'
     // repeat contents
     const children = elem.children
     let html = ""
     for (let i=0; i<items.length; i++) {
       for (let child of children) {
-        html += this.replaceVariable(child.outerHTML, "item", query.str+'['+i+']')
+        html += this.replaceVariable(child.outerHTML, varName, query.str+'['+i+']')
       }
     }
     elem.innerHTML = html
+    return true
   }
 
   //
@@ -134,8 +156,10 @@ export default class App {
   applyShow(elem) { return this.setVisibleOnAttribute(elem, "show", true) }
   applyHide(elem) { return this.setVisibleOnAttribute(elem, "hide", false) }
   applyVisibility(elem) {
-    if (!this.applyShow(elem)) this.applyHide(elem)
+    let hasChanged = this.applyShow(elem)
+    if (!hasChanged) hasChanged = this.applyHide(elem)
     if (elem.hasAttribute("equals")) elem.removeAttribute("equals") // cleanup
+    return hasChanged
   }
 
   //
@@ -147,7 +171,7 @@ export default class App {
 
   setVisibleOnAttribute(elem, attrName, valueMeansVisible=true) {
     const query = elem.popAttributeQuery(attrName)
-    if (query.isNull()) return false
+    if (!query || query.isNull()) return false
     const elseElem = elem.nextElementSibling?.classList.contains('else') ? elem.nextElementSibling : null
     // matches equals attribute
     const matchesEquals = this.equalsQuery(elem, query) ?? query.read(this.state) != null

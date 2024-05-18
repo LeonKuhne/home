@@ -22,4 +22,16 @@ export default class SeriesGraph {
     this.nodes[parent].children.push(child)
     this.nodes[child].parents.push(parent)
   }
+
+  asList() {
+    return Object.entries(this.nodes)
+      .map(([nodeName, props]) => ({
+        name: nodeName, 
+        id: nodeName.hashCode(),
+        children: props.children.map(name => ({
+          id: (nodeName + name).hashCode(),
+          child: name.hashCode()
+        })),
+      }))
+  }
 }

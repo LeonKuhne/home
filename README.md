@@ -7,6 +7,7 @@
 - use typescript (on at least the component and app)
 - see todos in code
 - add mobile support
+- make .for and .if their own components
 
 ## Notes
 - monkey-patching is slowly being replaced

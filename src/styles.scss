@@ -137,6 +137,10 @@ body {
 
 #stats  {
   height: 0;
+  .sim {
+    min-height: 10rem;
+    border: 1px solid $primary-color;
+  }
   .graph {
     background: $stats-color;
     #mermaid {
@@ -156,13 +160,17 @@ body {
     }
   } .graph:empty {
     display: none;
-  } .sim {
-    border: 1px solid $primary-color;
-  } .node {
-    background: $highlight-color;
-    color: $secondary-color;
-    border: 1px solid $primary-color;
-    padding: .5rem;
-    font-size: smaller;
+  } #task-graph {
+    transform: translate(50%, 50%);
+    .line {
+      left: 0;
+    }.node {
+      background: $highlight-color;
+      color: $secondary-color;
+      border: 1px solid $primary-color;
+      padding: .5rem;
+      font-size: smaller;
+      transform: translate(-50%, -50%);
+    }
   }
 }
