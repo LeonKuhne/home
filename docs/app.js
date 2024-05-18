@@ -158,7 +158,7 @@ export default class App {
   applyVisibility(elem) {
     let hasChanged = this.applyShow(elem)
     if (!hasChanged) hasChanged = this.applyHide(elem)
-    if (elem.hasAttribute("equals")) elem.removeAttribute("equals") // cleanup
+    if (hasChanged && elem.hasAttribute("equals")) elem.removeAttribute("equals") // cleanup
     return hasChanged
   }
 
@@ -170,8 +170,12 @@ export default class App {
   }
 
   setVisibleOnAttribute(elem, attrName, valueMeansVisible=true) {
-    const query = elem.popAttributeQuery(attrName)
-    if (!query || query.isNull()) return false
+    // parse query
+    if (!elem.hasAttribute(attrName)) return false
+    const query = new Query(elem.getAttribute(attrName))
+    if (!query.isValid(this.state)) return false
+    elem.removeAttribute(attrName)
+    // get else
     const elseElem = elem.nextElementSibling?.classList.contains('else') ? elem.nextElementSibling : null
     // matches equals attribute
     const matchesEquals = this.equalsQuery(elem, query) ?? query.read(this.state) != null

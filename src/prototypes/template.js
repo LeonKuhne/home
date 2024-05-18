@@ -3,11 +3,6 @@ import Query from "./query.js"
 //
 // Util
 
-HTMLElement.prototype.popAttributeQuery = function(attrName) {
-  if (!this.hasAttribute(attrName)) return
-  return new Query(this.popAttribute(attrName))
-}
-
 HTMLElement.prototype.popAttribute = function(attrName) {
   if (!this.hasAttribute(attrName)) return
   const value = this.getAttribute(attrName)

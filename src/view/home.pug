@@ -44,9 +44,10 @@
             particle-element.node.abs(id="node-$item.id") 
               .name $item.name
               .lines.for(list="$item.children" as="line")
-                line-connector(id="line-$line.id" from="$item.id" to="$line.child")
-                  svg.line.abs
-                    defs
-                    marker#arrow(markerWidth="13" markerHeight="13" refx="2" refy="6" orient="auto")
-                      path(d="M2,1 L2,10 L10,6 L2,2" style="fill:red;")
-                    path.line-path(d="M30,150 L100,50" style="stroke:red; stroke-width: 1.25px; fill: none; marker-end: url(#arrow);")
+                .if(hide="$line.child" equals="$item.id")
+                  line-connector(id="line-$line.id" from="$item.id" to="$line.child")
+                    svg.line.abs
+                      defs
+                      marker#arrow(markerWidth="13" markerHeight="13" refx="2" refy="6" orient="auto")
+                        path(d="M2,1 L2,10 L10,6 L2,2" style="fill:red;")
+                      path.line-path(d="M30,150 L100,50" style="stroke:red; stroke-width: 1.25px; fill: none; marker-end: url(#arrow);")
