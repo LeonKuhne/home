@@ -106,12 +106,18 @@ export default class ParticleElement extends Component {
   }
 
   attract(other, mod=1, degree=1, minThreshold=0) {
-    const dx = this.state.x - other.state.x 
-    const dy = this.state.y - other.state.y
+    let dx = this.state.x - other.state.x 
+    let dy = this.state.y - other.state.y
     const distance = Math.sqrt(dx * dx + dy * dy)
     mod *= (minThreshold - distance) ** degree
-    this.state.velX += dx * mod
-    this.state.velY += dy * mod
+    dx *= mod
+    dy *= mod
+    // attract self
+    this.state.velX += dx
+    this.state.velY += dy
+    // attract other
+    other.state.velX -= dx
+    other.state.velY -= dx
   }
 
   repelWall(deltaLeft, deltaTop, deltaRight, deltaBottom, mod=1, degree=2) {

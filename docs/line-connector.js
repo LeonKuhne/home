@@ -53,7 +53,6 @@ export default class LineConnector extends Component {
     // compare the aspect ratio of the angle of the line and the angle of the elem
     const elemSlope = toRect.height / toRect.width
     const connectHorizontally = Math.abs(slope) < Math.abs(elemSlope)
-    // TODO only works on the top
     // fix anchor offset
     if (connectHorizontally) { // x is greater than y
       let offset = toRect.width / 2
