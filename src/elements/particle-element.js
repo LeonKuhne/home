@@ -1,7 +1,7 @@
 import Component from './component.js'
 
 export default class ParticleElement extends Component {
-  constructor(fps=24, reactDistance=200) {
+  constructor(fps=24, reactDistance=500) {
     super()
     this.updateInterval = 1000 / fps
     this.reactDistance = reactDistance
@@ -77,7 +77,6 @@ export default class ParticleElement extends Component {
   }
   move(dx, dy, mod=1) {
     let distance = Math.sqrt(dx * dx + dy * dy)
-    // move away from the other particle-element
     if (distance < this.reactDistance) {
       distance /= -mod
       this.state.x += dx / distance
