@@ -1,7 +1,7 @@
 import Component from './component.js'
 
 export default class ParticleElement extends Component {
-  constructor(fps=24, reactDistance=500) {
+  constructor(fps=24, reactDistance=200) {
     super()
     this.updateInterval = 1000 / fps
     this.reactDistance = reactDistance
