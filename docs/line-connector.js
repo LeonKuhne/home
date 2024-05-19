@@ -49,16 +49,22 @@ export default class LineConnector extends Component {
     const toRect = this.toElem.getBoundingClientRect()
     const target = this.nodePos(toRect)
     const delta = { x: target.x - pos.x, y: target.y - pos.y }
-    const hasBiggerX = Math.abs(delta.x) > Math.abs(delta.y)
+    const slope = delta.y / delta.x
+    // compare the aspect ratio of the angle of the line and the angle of the elem
+    const elemSlope = toRect.height / toRect.width
+    const connectHorizontally = Math.abs(slope) < Math.abs(elemSlope)
+    // TODO only works on the top
     // fix anchor offset
-    if (hasBiggerX) { // x is greater than y
+    if (connectHorizontally) { // x is greater than y
       let offset = toRect.width / 2
       if (delta.x < 0) offset = -offset
       delta.x -= offset 
+      delta.y = slope * delta.x 
     } else { // y is greater than x
       let offset = toRect.height/ 2
       if (delta.y < 0) offset = -offset
       delta.y -= offset
+      delta.x = delta.y / slope 
     }
     this.path.setAttribute('d', `M0,0 L${delta.x},${delta.y}`)
   }

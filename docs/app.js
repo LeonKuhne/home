@@ -82,15 +82,12 @@ export default class App {
     for (let elem of tempRoot.querySelectorAll('.for')) {
       hasChanged = this.iterate(elem) || hasChanged
     }
-    console.log("for changed it", hasChanged)
     // .if
     for (let elem of tempRoot.querySelectorAll('.if')) {
       hasChanged = this.applyVisibility(elem) || hasChanged
     }
-    console.log("if changed it", hasChanged)
     // $var
     hasChanged = this.fill(tempRoot)
-    console.log("fill changed it", hasChanged)
     return hasChanged
   }
 
