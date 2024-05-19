@@ -1,10 +1,9 @@
 import Component from './component.js'
 
 export default class ParticleElement extends Component {
-  constructor(fps=24, reactDistance=500, jitter=1) {
+  constructor(fps=24, jitter=0.1) {
     super()
     this.updateInterval = 1000 / fps
-    this.reactDistance = reactDistance
     this.jitter = jitter
   }
 
@@ -56,7 +55,7 @@ export default class ParticleElement extends Component {
     this.updateBounds()
     // repel enemies
     for (const other of this.enemies) {
-      this.attract(other, -5)
+      this.attract(other, -4)
     }
     // attract friends
     for (const other of this.friends) {
@@ -89,11 +88,9 @@ export default class ParticleElement extends Component {
   }
   move(dx, dy, mod=1) {
     let distance = Math.sqrt(dx * dx + dy * dy)
-    if (distance < this.reactDistance) {
-      distance /= -mod
-      this.state.velX += dx / distance
-      this.state.velY += dy / distance
-    }
+    distance /= -mod
+    this.state.velX += dx / distance
+    this.state.velY += dy / distance
   }
 
   collideScreen() {
