@@ -1,7 +1,7 @@
 import Component from './component.js'
 
 export default class ParticleElement extends Component {
-  constructor(fps=24, jitter=0.001, attractForce=0.01, airFriction=0.1) {
+  constructor(fps=24, jitter=0.001, attractForce=0.0001, airFriction=0.1) {
     super()
     this.updateInterval = 1000 / fps
     this.jitter = jitter
