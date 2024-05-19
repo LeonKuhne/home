@@ -1,11 +1,12 @@
 import Component from './component.js'
 
 export default class ParticleElement extends Component {
-  constructor(fps=24, jitter=0.01, attractForce=0.1) {
+  constructor(fps=24, jitter=0.01, attractForce=0.1, airFriction=0.1) {
     super()
     this.updateInterval = 1000 / fps
     this.jitter = jitter
     this.attractForce = attractForce
+    this.airFriction = airFriction
   }
 
   //
@@ -54,6 +55,10 @@ export default class ParticleElement extends Component {
 
   processPhysics() {
     this.updateBounds()
+    // apply air friction
+    const friction = 1 - this.airFriction
+    this.state.velX *= friction
+    this.state.velY *= friction
     // repel enemies
     for (const other of this.enemies) {
       this.attract(other, -4)
