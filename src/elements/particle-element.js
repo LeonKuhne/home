@@ -1,12 +1,25 @@
 import Component from './component.js'
 
 export default class ParticleElement extends Component {
-  constructor(fps=24, jitter=0.001, attractForce=0.0001, airFriction=0.1) {
+  constructor(
+    fps=24, 
+    friendDistance=200,
+    airFriction=0.2,
+    wallForce=0.001, 
+    maxAccel=1000,
+    jitter=0.00001, 
+    enemyJolt=500,
+    friendlyJolt=0.000000012
+  ) {
     super()
     this.updateInterval = 1000 / fps
-    this.jitter = jitter
-    this.attractForce = attractForce
+    this.friendDistance = friendDistance
     this.airFriction = airFriction
+    this.wallForce = wallForce
+    this.maxAccel = maxAccel
+    this.jitter = jitter
+    this.enemyJolt = enemyJolt
+    this.friendlyJolt = friendlyJolt
   }
 
   //
@@ -46,6 +59,8 @@ export default class ParticleElement extends Component {
   // helpers
 
   updatePosition() { 
+    this.state.velX = Math.min(this.maxAccel, Math.max(-this.maxAccel, this.state.velX))
+    this.state.velY = Math.min(this.maxAccel, Math.max(-this.maxAccel, this.state.velY))
     this.state.x += this.state.velX
     this.state.y += this.state.velY
     this.collideScreen()
@@ -55,23 +70,26 @@ export default class ParticleElement extends Component {
 
   processPhysics() {
     this.updateBounds()
+    const count = this.friends.length + this.enemies.length
+    const step = 1 / count 
     // apply air friction
     const friction = 1 - this.airFriction
     this.state.velX *= friction
     this.state.velY *= friction
-    // attract friends
-    const friendStep = 1 / this.friends.length
-    for (const other of this.friends) {
-      this.attract(other, friendStep)
-    }
-    // repel enemies
-    const enemyStep = -2 / this.enemies.length
-    for (const other of this.enemies) {
-      this.attract(other, enemyStep)
-    }
+    // attract friends & repel enemies
+    for (const other of this.enemies) this.attract(other, step * this.enemyJolt, -2)
+    for (const other of this.friends) this.attract(other, step * this.friendlyJolt, 3, this.friendDistance)
     // add jitter
     this.state.velX += this.randomNormal() * this.jitter
     this.state.velY += this.randomNormal() * this.jitter
+    // repel from screen
+    this.repelWall(
+      this.state.x - this.bounds.left,
+      this.state.y - this.bounds.top,
+      this.bounds.right - this.state.x,
+      this.bounds.bottom - this.state.y,
+      count
+    )
   }
 
   updateBounds() {
@@ -87,25 +105,38 @@ export default class ParticleElement extends Component {
     }
   }
 
-  attract(other, mod=1) {
-    this.move(
-      this.state.x - other.state.x, 
-      this.state.y - other.state.y, 
-      mod
-    )
-  }
-  move(dx, dy, mod=1) {
-    let distance = Math.sqrt(dx * dx + dy * dy)
-    mod *= -this.attractForce / distance
+  attract(other, mod=1, degree=1, minThreshold=0) {
+    const dx = this.state.x - other.state.x 
+    const dy = this.state.y - other.state.y
+    const distance = Math.sqrt(dx * dx + dy * dy)
+    mod *= (minThreshold - distance) ** degree
     this.state.velX += dx * mod
     this.state.velY += dy * mod
   }
 
+  repelWall(deltaLeft, deltaTop, deltaRight, deltaBottom, mod=1, degree=2) {
+    mod *= this.wallForce
+    // horizontal bounds
+    if      (!deltaLeft)   this.state.velX =  this.maxAccel
+    else if (!deltaRight)  this.state.velX = -this.maxAccel
+    else { // apply force
+      this.state.velX += mod / deltaLeft   ** degree
+      this.state.velX -= mod / deltaRight  ** degree
+    }
+    // vertical bounds
+    if      (!deltaTop)    this.state.velY =  this.maxAccel
+    else if (!deltaBottom) this.state.velY = -this.maxAccel
+    else { // apply force
+      this.state.velY += mod / deltaTop    ** degree
+      this.state.velY -= mod / deltaBottom ** degree
+    }
+  }
+
   collideScreen() {
-    if      (this.state.x < this.bounds.left)   this.state.x = this.bounds.left
-    else if (this.state.x > this.bounds.right)  this.state.x = this.bounds.right
-    if      (this.state.y < this.bounds.top)    this.state.y = this.bounds.top
-    else if (this.state.y > this.bounds.bottom) this.state.y = this.bounds.bottom
+    if      (this.state.x < this.bounds.left)   this.state.x = this.bounds.left+1
+    else if (this.state.x > this.bounds.right)  this.state.x = this.bounds.right-1
+    if      (this.state.y < this.bounds.top)    this.state.y = this.bounds.top+1
+    else if (this.state.y > this.bounds.bottom) this.state.y = this.bounds.bottom-1
   }
 
   randomNormal() { return Math.random() * 2 - 1 }
