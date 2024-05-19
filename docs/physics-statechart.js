@@ -18,7 +18,7 @@ export default class PhysicsStatechart extends ListEntry {
     super.renderedState()
     for (const node of this.state) {
       const elem = this.nodeElem(node.id)
-      elem.repel(() => this.getBoundingClientRect(), ...this.findStrangers(node))
+      elem.simulate(() => this.getBoundingClientRect(), this.findChildren(node), this.findOthers(node))
       // update all of the edge bounds
       elem.querySelectorAll('line-connector').forEach(connector => {
         connector.trackElements()
@@ -29,14 +29,14 @@ export default class PhysicsStatechart extends ListEntry {
   //
   // helpers
 
-  // find all elements that arent you or your children
-  findStrangers(node) {
-    const strangers = []
+  findChildren(node) { return node.children.map(node => this.nodeElem(node.childId)) }
+  findOthers(node) {
+    const others = []
     for (const {id, name} of this.state) {
-      if (node.name === name || node.children.includes(name)) continue
-      strangers.push(this.nodeElem(id))
+      if (node.name === name) continue
+      others.push(this.nodeElem(id))
     }
-    return strangers
+    return others
   }
 
   // TODO might need to make name have spaces joined by dash

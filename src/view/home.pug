@@ -44,8 +44,8 @@
             particle-element.node.abs(id="node-$item.id") 
               .name.rel $item.name
               .lines.for(list="$item.children" as="line")
-                .if(hide="$line.child" equals="$item.id")
-                  line-connector(id="line-$line.id" from="$item.id" to="$line.child")
+                .if(hide="$line.childId" equals="$item.id")
+                  line-connector(id="line-$line.lineId" from="$item.id" to="$line.childId")
                     svg.line.abs
                       // TODO only define this once
                       defs 

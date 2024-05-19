@@ -24,11 +24,12 @@ export default class ParticleElement extends Component {
   // actions
 
   // note: particles update independently of each-other
-  repel(containerBounds, ...elements) { 
+  simulate(containerBounds, friends, enemies) { 
     this.containerBounds = containerBounds
-    this.strangerElements = elements 
+    this.friends = friends
+    this.enemies = enemies
     this.whileAlive(this.updateInterval, () => {
-      this.repelStrangers()
+      this.processPhysics()
       this.updatePosition()
     })
   }
@@ -42,29 +43,54 @@ export default class ParticleElement extends Component {
     this.style.top = `${this.state.y}px`
   }
 
-  repelStrangers() {
-    const rect = this.getBoundingClientRect()
-    const bounds = this.containerBounds()
-    const leftLimit   = -bounds.width  / 2 + rect.width  / 2
-    const rightLimit  =  bounds.width  / 2 - rect.width  / 2
-    const topLimit    = -bounds.height / 2 + rect.height / 2
-    const bottomLimit =  bounds.height / 2 - rect.height / 2
-    for (const other of this.strangerElements) {
-      // repel the other particle-element
-      const dx = this.state.x - other.state.x
-      const dy = this.state.y - other.state.y
-      const distance = Math.sqrt(dx * dx + dy * dy)
-      // move away from the other particle-element
-      if (distance < this.reactDistance) {
-        this.state.x += dx / distance
-        this.state.y += dy / distance
-        // check boundaries
-        if      (this.state.x < leftLimit) this.state.x = leftLimit
-        else if (this.state.x > rightLimit) this.state.x = rightLimit
-        if      (this.state.y < topLimit) this.state.y = topLimit
-        else if (this.state.y > bottomLimit) this.state.y = bottomLimit
-      }
+  processPhysics() {
+    this.updateBounds()
+    // repel enemies
+    for (const other of this.enemies) {
+      this.attract(other, -5)
     }
+    // attract friends
+    for (const other of this.friends) {
+      this.attract(other)
+    }
+  }
+
+  updateBounds() {
+    const bounds = this.containerBounds()
+    const rect = this.getBoundingClientRect()
+    const [halfRectWidth, halfRectHeight] = [rect.width / 2, rect.height / 2]
+    const [halfBoundsWidth, halfBoundsHeight] = [bounds.width / 2, bounds.height / 2]
+    this.bounds = {
+      left:  -halfBoundsWidth  + halfRectWidth,
+      right:  halfBoundsWidth  - halfRectWidth,
+      top:   -halfBoundsHeight + halfRectHeight,
+      bottom: halfBoundsHeight - halfRectHeight,
+    }
+  }
+
+  attract(other, mod=1) {
+    this.move(
+      this.state.x - other.state.x, 
+      this.state.y - other.state.y, 
+      mod
+    )
+  }
+  move(dx, dy, mod=1) {
+    let distance = Math.sqrt(dx * dx + dy * dy)
+    // move away from the other particle-element
+    if (distance < this.reactDistance) {
+      distance /= -mod
+      this.state.x += dx / distance
+      this.state.y += dy / distance
+      this.collideScreen()
+    }
+  }
+
+  collideScreen() {
+    if      (this.state.x < this.bounds.left)   this.state.x = this.bounds.left
+    else if (this.state.x > this.bounds.right)  this.state.x = this.bounds.right
+    if      (this.state.y < this.bounds.top)    this.state.y = this.bounds.top
+    else if (this.state.y > this.bounds.bottom) this.state.y = this.bounds.bottom
   }
 
   randomNormal() { return Math.random() * 2 - 1 }

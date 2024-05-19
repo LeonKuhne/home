@@ -29,8 +29,8 @@ export default class SeriesGraph {
         name: nodeName, 
         id: nodeName.hashCode(),
         children: props.children.map(name => ({
-          id: (nodeName + name).hashCode(),
-          child: name.hashCode()
+          lineId: (nodeName + name).hashCode(),
+          childId: name.hashCode()
         })),
       }))
   }
