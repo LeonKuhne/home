@@ -1,7 +1,7 @@
 import Component from './component.js'
 
 export default class ParticleElement extends Component {
-  constructor(fps=24, jitter=0.01, attractForce=0.01, airFriction=0.1) {
+  constructor(fps=24, jitter=0.001, attractForce=0.01, airFriction=0.1) {
     super()
     this.updateInterval = 1000 / fps
     this.jitter = jitter
@@ -94,9 +94,9 @@ export default class ParticleElement extends Component {
   }
   move(dx, dy, mod=1) {
     let distance = Math.sqrt(dx * dx + dy * dy)
-    distance /= -mod * this.attractForce
-    this.state.velX += dx / distance
-    this.state.velY += dy / distance
+    mod *= -this.attractForce / distance
+    this.state.velX += dx * mod
+    this.state.velY += dy * mod
   }
 
   collideScreen() {
