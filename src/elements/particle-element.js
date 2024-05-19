@@ -6,7 +6,7 @@ export default class ParticleElement extends Component {
     friendDistance=200,
     airFriction=0.2,
     wallForce=0.001, 
-    maxAccel=1000,
+    maxAccel=1,
     jitter=0.00001, 
     enemyJolt=500,
     friendlyJolt=0.000000012
