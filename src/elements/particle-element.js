@@ -1,10 +1,11 @@
 import Component from './component.js'
 
 export default class ParticleElement extends Component {
-  constructor(fps=24, jitter=0.1) {
+  constructor(fps=24, jitter=0.01, attractForce=0.1) {
     super()
     this.updateInterval = 1000 / fps
     this.jitter = jitter
+    this.attractForce = attractForce
   }
 
   //
@@ -88,7 +89,7 @@ export default class ParticleElement extends Component {
   }
   move(dx, dy, mod=1) {
     let distance = Math.sqrt(dx * dx + dy * dy)
-    distance /= -mod
+    distance /= -mod * this.attractForce
     this.state.velX += dx / distance
     this.state.velY += dy / distance
   }
