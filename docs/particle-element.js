@@ -1,17 +1,23 @@
 import Component from './component.js'
 
 export default class ParticleElement extends Component {
-  constructor(fps=24, reactDistance=200) {
+  constructor(fps=24, reactDistance=500, jitter=1) {
     super()
     this.updateInterval = 1000 / fps
     this.reactDistance = reactDistance
+    this.jitter = jitter
   }
 
   //
   // lifecycle
 
   initState() {
-    this.state = { x: this.randomNormal(), y: this.randomNormal() }
+    this.state = { 
+      x: this.randomNormal(), 
+      y: this.randomNormal(),
+      velX: 0, 
+      velY: 0
+    }
     this.nameElem = this.querySelector('.name')
     this.name = this.nameElem.textContent
   }
@@ -39,6 +45,9 @@ export default class ParticleElement extends Component {
   // helpers
 
   updatePosition() { 
+    this.state.x += this.state.velX
+    this.state.y += this.state.velY
+    this.collideScreen()
     this.style.left = `${this.state.x}px`
     this.style.top = `${this.state.y}px`
   }
@@ -53,6 +62,9 @@ export default class ParticleElement extends Component {
     for (const other of this.friends) {
       this.attract(other)
     }
+    // add jitter
+    this.state.velX += this.randomNormal() * this.jitter
+    this.state.velY += this.randomNormal() * this.jitter
   }
 
   updateBounds() {
@@ -77,12 +89,10 @@ export default class ParticleElement extends Component {
   }
   move(dx, dy, mod=1) {
     let distance = Math.sqrt(dx * dx + dy * dy)
-    // move away from the other particle-element
     if (distance < this.reactDistance) {
       distance /= -mod
-      this.state.x += dx / distance
-      this.state.y += dy / distance
-      this.collideScreen()
+      this.state.velX += dx / distance
+      this.state.velY += dy / distance
     }
   }
 
