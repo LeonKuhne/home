@@ -59,13 +59,15 @@ export default class ParticleElement extends Component {
     const friction = 1 - this.airFriction
     this.state.velX *= friction
     this.state.velY *= friction
-    // repel enemies
-    for (const other of this.enemies) {
-      this.attract(other, -2)
-    }
     // attract friends
+    const friendStep = 1 / this.friends.length
     for (const other of this.friends) {
-      this.attract(other)
+      this.attract(other, friendStep)
+    }
+    // repel enemies
+    const enemyStep = -2 / this.enemies.length
+    for (const other of this.enemies) {
+      this.attract(other, enemyStep)
     }
     // add jitter
     this.state.velX += this.randomNormal() * this.jitter
