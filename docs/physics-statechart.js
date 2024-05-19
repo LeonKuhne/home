@@ -18,7 +18,11 @@ export default class PhysicsStatechart extends ListEntry {
     super.renderedState()
     for (const node of this.state) {
       const elem = this.nodeElem(node.id)
-      elem.simulate(() => this.getBoundingClientRect(), this.findChildren(node), this.findOthers(node))
+      elem.simulate(
+        () => this.getBoundingClientRect(), 
+        this.findChildren(node), 
+        this.findStrangers(node)
+      )
       // update all of the edge bounds
       elem.querySelectorAll('line-connector').forEach(connector => {
         connector.trackElements()
@@ -29,11 +33,14 @@ export default class PhysicsStatechart extends ListEntry {
   //
   // helpers
 
-  findChildren(node) { return node.children.map(node => this.nodeElem(node.childId)) }
-  findOthers(node) {
+  findChildren(node) { return node.children.map(line => this.nodeElem(line.childId)) }
+  findStrangers(node) {
     const others = []
     for (const {id, name} of this.state) {
-      if (node.name === name) continue
+      if (node.name === name 
+        || node.children.find(line => id === line.childId)
+        || node.parents.includes(id)
+      ) continue
       others.push(this.nodeElem(id))
     }
     return others

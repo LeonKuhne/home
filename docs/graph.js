@@ -32,6 +32,7 @@ export default class SeriesGraph {
           lineId: (nodeName + name).hashCode(),
           childId: name.hashCode()
         })),
+        parents: props.parents.map(name => name.hashCode())
       }))
   }
 }

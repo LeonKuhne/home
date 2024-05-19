@@ -1,5 +1,5 @@
 import Timeslot from './timeslot.js'
-import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10.9.1/+esm'
+//import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10.9.1/+esm'
 import Graph from './graph.js'
 
 export default class Analytics {
@@ -18,7 +18,7 @@ export default class Analytics {
   setupAnalytics() {
     this.completeHistory = [...this.history.filter(item => item.task), ...this.scheduleTasks]
     // custom graph
-    this.setupMermaidGraph()
+    //this.setupMermaidGraph()
     const graph = new Graph(
       this.completeHistory
         .filter(item => item.task)

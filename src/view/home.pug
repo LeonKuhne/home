@@ -38,12 +38,12 @@
     // stats
     #stats.rel
       .sim.expand
-        .graph.pad-1
+        //.graph.pad-1
         physics-statechart#task-graph.rel
-          .for(list="$task-graph")
+          .graph-items.fill.abs.for(list="$task-graph")
             particle-element.node.abs(id="node-$item.id") 
               .name.rel $item.name
-              .lines.for(list="$item.children" as="line")
+              .lines.abs.for(list="$item.children" as="line")
                 .if(hide="$line.childId" equals="$item.id")
                   line-connector(id="line-$line.lineId" from="$item.id" to="$line.childId")
                     svg.line.abs

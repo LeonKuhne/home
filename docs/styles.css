@@ -809,8 +809,9 @@ input, select, button {
   height: 0;
 }
 #stats .sim {
-  min-height: 10rem;
+  min-height: calc(100vh - 10rem);
   border: 1px solid var(--primary-color);
+  margin-bottom: 5rem;
 }
 #stats .graph {
   background: var(--stats-color);
@@ -836,11 +837,10 @@ input, select, button {
 #stats .graph:empty {
   display: none;
 }
-#stats #task-graph {
-  transform: translate(50%, 50%);
+#stats #task-graph .graph-items {
+  overflow: hidden;
 }
 #stats #task-graph .lines {
-  position: absolute;
   top: 50%;
   left: 50%;
 }

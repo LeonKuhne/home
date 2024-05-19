@@ -138,8 +138,9 @@ body {
 #stats  {
   height: 0;
   .sim {
-    min-height: 10rem;
+    min-height: calc(100vh - 10rem);
     border: 1px solid $primary-color;
+    margin-bottom: 5rem;
   }
   .graph {
     background: $stats-color;
@@ -161,9 +162,9 @@ body {
   } .graph:empty {
     display: none;
   } #task-graph {
-    transform: translate(50%, 50%);
-    .lines {
-      position: absolute;
+    .graph-items {
+      overflow: hidden;
+    } .lines {
       top: 50%;
       left: 50%;
     } .line {

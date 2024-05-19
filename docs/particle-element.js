@@ -3,9 +3,9 @@ import Component from './component.js'
 export default class ParticleElement extends Component {
   constructor(
     fps=24, 
-    friendDistance=200,
+    friendDistance=300,
     airFriction=0.2,
-    wallForce=0.001, 
+    wallForce=50, 
     maxAccel=1,
     jitter=0.00001, 
     enemyJolt=500,
@@ -26,12 +26,7 @@ export default class ParticleElement extends Component {
   // lifecycle
 
   initState() {
-    this.state = { 
-      x: this.randomNormal(), 
-      y: this.randomNormal(),
-      velX: 0, 
-      velY: 0
-    }
+    this.state = { x: 0, y: 0, velX: 0, velY: 0 }
     this.nameElem = this.querySelector('.name')
     this.name = this.nameElem.textContent
   }
@@ -46,6 +41,9 @@ export default class ParticleElement extends Component {
   // note: particles update independently of each-other
   simulate(containerBounds, friends, enemies) { 
     this.containerBounds = containerBounds
+    this.updateBounds()
+    this.state.x = (this.bounds.right - this.bounds.left) * Math.random()
+    this.state.y = (this.bounds.bottom - this.bounds.top) * Math.random()
     this.friends = friends
     this.enemies = enemies
     this.whileAlive(this.updateInterval, () => {
@@ -53,7 +51,6 @@ export default class ParticleElement extends Component {
       this.updatePosition()
     })
   }
-
 
   //
   // helpers
@@ -84,8 +81,8 @@ export default class ParticleElement extends Component {
     this.state.velY += this.randomNormal() * this.jitter
     // repel from screen
     this.repelWall(
-      this.state.x - this.bounds.left,
-      this.state.y - this.bounds.top,
+      this.bounds.left - this.state.x,
+      this.bounds.top - this.state.y,
       this.bounds.right - this.state.x,
       this.bounds.bottom - this.state.y,
       count
@@ -96,12 +93,11 @@ export default class ParticleElement extends Component {
     const bounds = this.containerBounds()
     const rect = this.getBoundingClientRect()
     const [halfRectWidth, halfRectHeight] = [rect.width / 2, rect.height / 2]
-    const [halfBoundsWidth, halfBoundsHeight] = [bounds.width / 2, bounds.height / 2]
     this.bounds = {
-      left:  -halfBoundsWidth  + halfRectWidth,
-      right:  halfBoundsWidth  - halfRectWidth,
-      top:   -halfBoundsHeight + halfRectHeight,
-      bottom: halfBoundsHeight - halfRectHeight,
+      left: halfRectWidth,
+      top: halfRectHeight,
+      right:  bounds.width - halfRectWidth,
+      bottom: bounds.height - halfRectHeight,
     }
   }
 
