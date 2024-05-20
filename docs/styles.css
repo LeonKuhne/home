@@ -812,8 +812,6 @@ input, select, button {
   min-height: calc(100vh - 10rem);
   border: 1px solid var(--primary-color);
   margin-bottom: 5rem;
-}
-#stats .graph {
   background: var(--stats-color);
 }
 #stats .graph #mermaid {
@@ -843,6 +841,10 @@ input, select, button {
 #stats #task-graph .lines {
   top: 50%;
   left: 50%;
+}
+#stats #task-graph .line-count {
+  color: var(--secondary-color);
+  font-size: smaller;
 }
 #stats #task-graph .line {
   left: 0;

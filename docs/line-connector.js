@@ -13,6 +13,7 @@ export default class LineConnector extends Component {
     this.path = this.querySelector('path.line-path')
     this.fromElem = this.nodeFromAttributeId('from')
     this.toElem = this.nodeFromAttributeId('to')
+    this.countElem = this.querySelector('.line-count')
   }
   createState() {}
   setState() {}
@@ -33,22 +34,9 @@ export default class LineConnector extends Component {
     return document.getElementById('node-' + this.getAttribute(attributeName))
   }
 
-  nodePos(rect) {
-    const pos = {
-      x: rect.x - window.scrollX + rect.width / 2,
-      y: rect.y - window.scrollY + rect.height / 2
-    }
-    return pos
-  }
-
-  nodeAnchor(elem) {
-  }
-
   updatePosition() {
-    const pos = this.nodePos(this.fromElem.getBoundingClientRect())
     const toRect = this.toElem.getBoundingClientRect()
-    const target = this.nodePos(toRect)
-    const delta = { x: target.x - pos.x, y: target.y - pos.y }
+    const delta = this.currentDelta(toRect)
     const slope = delta.y / delta.x
     // compare the aspect ratio of the angle of the line and the angle of the elem
     const elemSlope = toRect.height / toRect.width
@@ -66,5 +54,14 @@ export default class LineConnector extends Component {
       delta.x = delta.y / slope 
     }
     this.path.setAttribute('d', `M0,0 L${delta.x},${delta.y}`)
+    // fix line count position
+    this.countElem.style.left = `${delta.x / 2}px`
+    this.countElem.style.top = `${delta.y / 2}px`
+  }
+
+  currentDelta() {
+    const pos = this.fromElem.state
+    const target = this.toElem.state
+    return { x: target.x - pos.x, y: target.y - pos.y }
   }
 }

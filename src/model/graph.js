@@ -24,15 +24,30 @@ export default class SeriesGraph {
   }
 
   asList() {
-    return Object.entries(this.nodes)
-      .map(([nodeName, props]) => ({
-        name: nodeName, 
-        id: nodeName.hashCode(),
-        children: props.children.map(name => ({
-          lineId: (nodeName + name).hashCode(),
-          childId: name.hashCode()
-        })),
+    const nodes = []
+    for (const [name, props] of Object.entries(this.nodes)) {
+      // children
+      const children = {}
+      for (const childName of props.children) {
+        if (childName in children) {
+          children[childName].count++
+          continue
+        }
+        children[childName] = {
+          lineId: (name + childName).hashCode(),
+          childId: childName.hashCode(),
+          count: 1
+        }
+      }
+      // node
+      const node = {
+        name, 
+        id: name.hashCode(),
+        children: Object.values(children),
         parents: props.parents.map(name => name.hashCode())
-      }))
+      }
+      nodes.push(node)
+    }
+    return nodes 
   }
 }

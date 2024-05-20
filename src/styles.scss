@@ -141,9 +141,9 @@ body {
     min-height: calc(100vh - 10rem);
     border: 1px solid $primary-color;
     margin-bottom: 5rem;
+    background: $stats-color;
   }
   .graph {
-    background: $stats-color;
     #mermaid {
       margin: auto;
       display: block;
@@ -167,6 +167,9 @@ body {
     } .lines {
       top: 50%;
       left: 50%;
+    } .line-count {
+      color: $secondary-color;
+      font-size: smaller;
     } .line {
       left: 0;
       .line-path {
@@ -193,3 +196,7 @@ body {
     }
   }
 }
+
+
+// TODO create a mixin that changes the line color based on the count it has
+// you might need to add the count as an attribute of the line to be able to select it
