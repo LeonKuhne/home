@@ -58,7 +58,7 @@ export default class TaskManager {
           break
         default:
           return new Task(name, {
-            id: new String(name.hashCode()),
+            id: name.hashCode().toString(),
             createdAt: new Date().toISOString(),
           })
       }

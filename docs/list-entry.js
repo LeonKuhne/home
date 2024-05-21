@@ -36,7 +36,6 @@ export default class ListEntry extends Component {
     const item = this._getAddState((query) => this.read(query))
     if (!item) return
     this.add(item)
-    this.updateTemplate()
   }
 
   // 

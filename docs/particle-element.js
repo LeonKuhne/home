@@ -70,33 +70,10 @@ export default class ParticleElement extends Component {
 
   processPhysics() {
     this.updateBounds()
-    const enemyCount = this.enemies.length
-    const friendlyCount = this.friendRefs
-      .map(ref => ref.count)
-      .reduce((count, sum) => count + sum)
-    const enemyStep = 1 / enemyCount
-    const friendlyStep = 1 / friendlyCount
-    const step = 1 / (friendlyCount + enemyCount)
     // apply air friction
     const friction = 1 - this.airFriction
     this.state.velX *= friction
     this.state.velY *= friction
-    // repel enemies
-    for (const other of this.enemies) {
-      this.attract(
-        other,
-        this.enemyJolt * step,
-        x => 2 / ((x/this.enemyDistance) + 1) - 1
-      )
-    }
-    // attract friends
-    for (const otherRef of this.friendRefs) {
-      this.attract(
-        otherRef.elem,
-        this.friendlyJolt * step * otherRef.count,
-        x => Math.tanh((1 - x/this.friendlyDistance) / this.friendlySkew), 
-      )
-    }
     // add jitter
     this.state.velX += this.randomNormal() * this.jitter
     this.state.velY += this.randomNormal() * this.jitter
@@ -108,6 +85,41 @@ export default class ParticleElement extends Component {
       this.bounds.bottom - this.state.y,
       x => -Math.sqrt(Math.abs(x)/this.enemyDistance) * this.wallForce
     )
+    // interact particles
+    this.interact()
+  }
+
+  //
+  // interacting forces 
+
+  interact() {
+    const totalCount = this.countFriendlies() + this.enemies.length
+    if (!totalCount) return
+    const step = 1 / (totalCount)
+    this.repelEnemies(step)
+    this.attractFriends(step)
+  }
+
+  repelEnemies(step) {
+    if (!this.enemies.Length) return
+    for (const other of this.enemies) {
+      this.attract(
+        other,
+        this.enemyJolt * step,
+        x => 2 / ((x/this.enemyDistance) + 1) - 1
+      )
+    }
+  }
+
+  attractFriends(step) {
+    if (!this.friendRefs.Length) return
+    for (const otherRef of this.friendRefs) {
+      this.attract(
+        otherRef.elem,
+        this.friendlyJolt * step * otherRef.count,
+        x => Math.tanh((1 - x/this.friendlyDistance) / this.friendlySkew), 
+      )
+    }
   }
 
   updateBounds() {
@@ -161,5 +173,15 @@ export default class ParticleElement extends Component {
     else if (this.state.y > this.bounds.bottom) this.state.y = this.bounds.bottom-1
   }
 
+  // 
+  // util
+
   randomNormal() { return Math.random() * 2 - 1 }
+
+  countFriendlies() {
+    if (!this.friendRefs.length) return 0
+    return this.friendRefs
+      .map(ref => ref.count)
+      .reduce((count, sum) => count + sum)
+  }
 }
