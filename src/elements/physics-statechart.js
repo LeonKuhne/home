@@ -20,7 +20,7 @@ export default class PhysicsStatechart extends ListEntry {
       const elem = this.nodeElem(node.id)
       elem.simulate(
         () => this.getBoundingClientRect(), 
-        this.findChildren(node), 
+        this.findChildrenRefs(node), 
         this.findStrangers(node)
       )
       // update all of the edge bounds
@@ -33,7 +33,13 @@ export default class PhysicsStatechart extends ListEntry {
   //
   // helpers
 
-  findChildren(node) { return node.children.map(line => this.nodeElem(line.childId)) }
+  findChildrenRefs(node) { 
+    return node.children.map(line => ({
+      elem: this.nodeElem(line.childId),
+      count: line.count,
+    }))
+  }
+
   findStrangers(node) {
     const others = []
     for (const {id, name} of this.state) {
