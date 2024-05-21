@@ -802,7 +802,7 @@ input, select, button {
   background: var(--highlight-color);
 }
 #calendar .timeslot.dragtask {
-  filter: brightness(1.5);
+  filter: brightness(1.4);
 }
 
 #stats {

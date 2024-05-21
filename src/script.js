@@ -106,7 +106,7 @@ switch (params.get('page')) {
     app.define('physics-statechart', PhysicsStatechart)
     app.define('particle-element', ParticleElement)
     app.define('line-connector', LineConnector)
-    app.addMissingState({[scheduleId]: { scrollTop: 0, items: QuarterHour.quarteredDay() }})
+    app.recurseMissingState({[scheduleId]: { scrollTop: 0, items: QuarterHour.quarteredDay() }})
     app.addMissingState({[statsId]: []})
     app.addMissingState({[statGraphId]: []})
     app.onRender(_ => new TaskManager(baseTable, tableName, taskManagerId, scheduleId, statsId, statGraphId, app, welcomeMessages, defaultTheme))

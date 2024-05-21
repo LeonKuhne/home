@@ -27,6 +27,15 @@ export default class App {
     this.saveState()
   }
 
+  recurseMissingState(stateChanges, changedState=null) { 
+    if (!changedState) changedState = this.state
+    for (let [key, val] of Object.entries(stateChanges)) {
+      const val = changedState[key]
+      if (typeof val !== 'object' || !val) { changedState[key] = val; continue } 
+      this.recurseMissingState(val, changedState[key])
+    }
+  }
+
   addState(state) {
     this.state = {...this.state, ...state}
     this.saveState()
