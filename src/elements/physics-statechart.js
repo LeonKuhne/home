@@ -20,8 +20,8 @@ export default class PhysicsStatechart extends ListEntry {
       const elem = this.nodeElem(node.id)
       elem.simulate(
         () => this.getBoundingClientRect(), 
-        this.findChildrenRefs(node), 
-        this.findStrangers(node)
+        this.findConnected(node), // connected
+        this.findAll(node),       // all others
       )
       // update all of the edge bounds
       elem.querySelectorAll('line-connector').forEach(connector => {
@@ -33,6 +33,15 @@ export default class PhysicsStatechart extends ListEntry {
   //
   // helpers
 
+  findConnected(node) {
+    return this.findParentRefs(node)
+      .concat(this.findChildrenRefs(node))
+  }
+
+  findParentRefs(node) {
+    return node.parents.map(id => this.nodeElem(id))
+  }
+
   findChildrenRefs(node) { 
     return node.children.map(line => ({
       elem: this.nodeElem(line.childId),
@@ -40,16 +49,10 @@ export default class PhysicsStatechart extends ListEntry {
     }))
   }
 
-  findStrangers(node) {
-    const others = []
-    for (const {id, name} of this.state) {
-      if (node.name === name 
-        || node.children.find(line => id === line.childId)
-        || node.parents.includes(id)
-      ) continue
-      others.push(this.nodeElem(id))
-    }
-    return others
+  findAll(node) {
+    return this.state
+      .filter(other => other.id !== node.id)
+      .map(other => this.nodeElem(other.id))
   }
 
   // TODO might need to make name have spaces joined by dash

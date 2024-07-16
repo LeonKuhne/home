@@ -3,26 +3,27 @@ import Component from './component.js'
 export default class ParticleElement extends Component {
   constructor(
     fps=24, 
-    friendlyDistance=300,
-    enemyDistance=400,
+    attractDistance=300,
+    attractJolt=1.7, // connected has to be greater than other by a min threshold or else it doesnt sort
+    attractSkew=5, // a value greater than one increases the connected distance range
+    repelDistance=400,
+    repelJolt=3,
     airFriction=0.5, // ie algo feedback
     wallForce=10, 
     maxAccel=5,
     jitter=0.1, 
-    enemyJolt=1,
-    friendlyJolt=1.7, // friendly has to be greater than enemy by a min threshold or else it doesnt sort
-    friendlySkew=5, // a value greater than one increases the friendly distance range
   ) {
     super()
     this.updateInterval = 1000 / fps
-    this.friendlyDistance = friendlyDistance
-    this.enemyDistance = enemyDistance
+    this.attractDistance = attractDistance
+    this.attractJolt = attractJolt
+    this.attractSkew = attractSkew
+    this.repelDistance = repelDistance
+    this.repelJolt = repelJolt
     this.airFriction = airFriction
     this.wallForce = wallForce
     this.maxAccel = maxAccel
     this.jitter = jitter
-    this.enemyJolt = enemyJolt
-    this.friendlyJolt = friendlyJolt
   }
 
   //
@@ -42,13 +43,13 @@ export default class ParticleElement extends Component {
   // actions
 
   // note: particles update independently of each-other
-  simulate(containerBounds, friendRefs, enemies) { 
+  simulate(containerBounds, connected, others) { 
     this.containerBounds = containerBounds
     this.updateBounds()
     this.state.x = (this.bounds.right - this.bounds.left) * Math.random()
     this.state.y = (this.bounds.bottom - this.bounds.top) * Math.random()
-    this.friendRefs = friendRefs
-    this.enemies = enemies
+    this.connected = connected
+    this.others = others
     this.whileAlive(this.updateInterval, () => {
       this.processPhysics()
       this.updatePosition()
@@ -83,41 +84,39 @@ export default class ParticleElement extends Component {
       this.bounds.top - this.state.y,
       this.bounds.right - this.state.x,
       this.bounds.bottom - this.state.y,
-      x => -Math.sqrt(Math.abs(x)/this.enemyDistance) * this.wallForce
+      x => -Math.sqrt(Math.abs(x)/this.repelDistance) * this.wallForce
     )
     // interact particles
-    this.interact()
+    this.interact(this.others.length)
   }
 
   //
   // interacting forces 
 
-  interact() {
-    const totalCount = this.countFriendlies() + this.enemies.length
+  interact(totalCount) {
     if (!totalCount) return
-    const step = 1 / (totalCount)
-    this.repelEnemies(step)
-    this.attractFriends(step)
+    const step = 1 / totalCount
+    this.repelAll(step)
+    if (!this.connected.Length) return
+    this.attractConnected(step)
   }
 
-  repelEnemies(step) {
-    if (!this.enemies.Length) return
-    for (const other of this.enemies) {
-      this.attract(
-        other,
-        this.enemyJolt * step,
-        x => 2 / ((x/this.enemyDistance) + 1) - 1
+  repelAll(step) {
+    const mod = this.repelJolt * step
+    for (const other of this.others) {
+      this.attract(other,
+        //x => mod * 2 / ((x/this.repelDistance) + 1) - 1
+        x => -mod * (this.repelDistance * this.repelDistance) / (x * x)
       )
     }
   }
 
-  attractFriends(step) {
-    if (!this.friendRefs.Length) return
-    for (const otherRef of this.friendRefs) {
-      this.attract(
-        otherRef.elem,
-        this.friendlyJolt * step * otherRef.count,
-        x => Math.tanh((1 - x/this.friendlyDistance) / this.friendlySkew), 
+  attractConnected(step) {
+    const mod = this.attractJolt * step * others.count
+    for (const connected of this.connected) {
+      this.attract(connected,
+        //x => mod * Math.tanh((1 - x/this.attractDistance) / this.attractSkew), 
+        x => mod * (x * x) / this.attractDistance
       )
     }
   }
@@ -134,13 +133,13 @@ export default class ParticleElement extends Component {
     }
   }
 
-  attract(other, mod=1, process=x=>x) {
+  attract(other, mod=x=>x) {
     let dx = this.state.x - other.state.x 
     let dy = this.state.y - other.state.y
     const distance = Math.sqrt(dx * dx + dy * dy)
-    mod *= process(distance)
-    dx *= mod
-    dy *= mod
+    const alt = mod(distance)
+    dx *= alt
+    dy *= alt
     // attract self
     this.state.velX += dx
     this.state.velY += dy
@@ -177,11 +176,4 @@ export default class ParticleElement extends Component {
   // util
 
   randomNormal() { return Math.random() * 2 - 1 }
-
-  countFriendlies() {
-    if (!this.friendRefs.length) return 0
-    return this.friendRefs
-      .map(ref => ref.count)
-      .reduce((count, sum) => count + sum)
-  }
 }
