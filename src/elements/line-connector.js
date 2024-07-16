@@ -24,7 +24,7 @@ export default class LineConnector extends Component {
   // actions
 
   trackElements() { 
-    this.whileAlive(this.updateInterval, () => this.updatePosition())
+    this.whileAlive(() => this.updatePosition(), this.updateInterval)
   }
 
   //

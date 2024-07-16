@@ -40,7 +40,7 @@ export default class Component extends HTMLElement {
   }
 
   connectedCallback() { 
-    this.alive = true
+    this.ready = true
     this.requireProperties()
     this.initState()
     this.register()
@@ -56,7 +56,7 @@ export default class Component extends HTMLElement {
   }
 
   disconnectedCallback() { 
-    this.alive = false
+    this.ready = false
     this.destroyState()
     if (this.registerWithTemplate) this.unregister() 
   } 
@@ -99,10 +99,19 @@ export default class Component extends HTMLElement {
   //
   // Busy Loops
 
-  whileAlive(delay, callback) {
-    if (!this.alive) return
-    callback()
-    setTimeout(() => this.whileAlive(delay, callback), delay)
+  whileAlive(callback, delay, mod=1) {
+    const wasDead = !this.aliveAction
+    this.aliveAction = {
+      callback, 
+      delay: () => { delay *= mod; return delay }
+    }
+    if (wasDead) this.cycle()
+  }
+
+  cycle() {
+    if (!this.ready) return
+    this.aliveAction.callback()
+    setTimeout(() => this.cycle(), this.aliveAction.delay())
   }
 
   //

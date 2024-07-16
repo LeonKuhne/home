@@ -16,42 +16,43 @@ export default class PhysicsStatechart extends ListEntry {
 
   renderedState() {
     super.renderedState()
+    const nodes = []
+    // setup nodes
     for (const node of this.state) {
       const elem = this.nodeElem(node.id)
+      nodes.push(elem)
       elem.simulate(
         () => this.getBoundingClientRect(), 
-        this.findConnected(node), // connected
-        this.findAll(node),       // all others
+        this.getConnectedElements(node),
+        this.getOtherElements(node)
       )
       // update all of the edge bounds
       elem.querySelectorAll('line-connector').forEach(connector => {
         connector.trackElements()
       })
     }
+
+    // update nodes
+    const fps = 120
+    const timeDamping = 1.015
+    this.whileAlive(() => {
+      for (const node of nodes) node.processPhysics()
+      for (const node of nodes) node.updatePosition()
+    }, 1000 / fps, timeDamping) // update less freq as time goes on
   }
 
   //
   // helpers
 
-  findConnected(node) {
-    return this.findParentRefs(node)
-      .concat(this.findChildrenRefs(node))
+  getConnectedElements(node) {
+    return node.children.map(child => child.childId)
+      .concat(node.parents)
+      .map(id => this.nodeElem(id))
+      .filter(elem => node.id !== elem.id)
   }
 
-  findParentRefs(node) {
-    return node.parents.map(id => this.nodeElem(id))
-  }
-
-  findChildrenRefs(node) { 
-    return node.children.map(line => ({
-      elem: this.nodeElem(line.childId),
-      count: line.count,
-    }))
-  }
-
-  findAll(node) {
-    return this.state
-      .filter(other => other.id !== node.id)
+  getOtherElements(node) {
+    return this.state.filter(other => other.id !== node.id)
       .map(other => this.nodeElem(other.id))
   }
 

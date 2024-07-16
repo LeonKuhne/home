@@ -2,35 +2,29 @@ import Component from './component.js'
 
 export default class ParticleElement extends Component {
   constructor(
-    fps=24, 
-    attractDistance=300,
-    attractJolt=1.7, // connected has to be greater than other by a min threshold or else it doesnt sort
     attractSkew=5, // a value greater than one increases the connected distance range
-    repelDistance=400,
-    repelJolt=3,
-    airFriction=0.5, // ie algo feedback
-    wallForce=10, 
-    maxAccel=5,
-    jitter=0.1, 
+    feedbackDamping=0.995,
+    coolFactor=0.9,
+    wallForce=1000, 
+    maxAccel=50000,
   ) {
     super()
-    this.updateInterval = 1000 / fps
-    this.attractDistance = attractDistance
-    this.attractJolt = attractJolt
     this.attractSkew = attractSkew
-    this.repelDistance = repelDistance
-    this.repelJolt = repelJolt
-    this.airFriction = airFriction
+    this.feedbackDamping = feedbackDamping
+    this.coolFactor = coolFactor
     this.wallForce = wallForce
     this.maxAccel = maxAccel
-    this.jitter = jitter
+
+    this.optimalDistance = 150;
+    this.repulsiveStrength = 500;
+    this.attractiveStrength = 0.4;
   }
 
   //
   // lifecycle
 
   initState() {
-    this.state = { x: 0, y: 0, velX: 0, velY: 0 }
+    this.state = { x: 0, y: 0, velX: 0, velY: 0, temperature: 1 }
     this.nameElem = this.querySelector('.name')
     this.name = this.nameElem.textContent
   }
@@ -48,77 +42,87 @@ export default class ParticleElement extends Component {
     this.updateBounds()
     this.state.x = (this.bounds.right - this.bounds.left) * Math.random()
     this.state.y = (this.bounds.bottom - this.bounds.top) * Math.random()
+    this.state.temperature = 1
     this.connected = connected
     this.others = others
-    this.whileAlive(this.updateInterval, () => {
-      this.processPhysics()
-      this.updatePosition()
-    })
   }
 
   //
   // helpers
 
-  updatePosition() { 
-    this.state.velX = Math.min(this.maxAccel, Math.max(-this.maxAccel, this.state.velX))
-    this.state.velY = Math.min(this.maxAccel, Math.max(-this.maxAccel, this.state.velY))
-    this.state.x += this.state.velX
-    this.state.y += this.state.velY
-    this.collideScreen()
-    this.style.left = `${this.state.x}px`
-    this.style.top = `${this.state.y}px`
-  }
-
   processPhysics() {
     this.updateBounds()
-    // apply air friction
-    const friction = 1 - this.airFriction
-    this.state.velX *= friction
-    this.state.velY *= friction
-    // add jitter
-    this.state.velX += this.randomNormal() * this.jitter
-    this.state.velY += this.randomNormal() * this.jitter
+    // air resistance 
+    //this.state.velX *= this.feedbackDamping
+    //this.state.velY *= this.feedbackDamping
+    // interact particles
+    this.interact()
     // repel from screen
+    /*
     this.repelWall(
       this.bounds.left - this.state.x,
       this.bounds.top - this.state.y,
       this.bounds.right - this.state.x,
       this.bounds.bottom - this.state.y,
-      x => -Math.sqrt(Math.abs(x)/this.repelDistance) * this.wallForce
+      x => 1 / x ** 2 * this.optimalDistance * this.wallForce
     )
-    // interact particles
-    this.interact(this.others.length)
+    */
   }
+
+  updatePosition() { 
+    this.state.temperature *= this.coolFactor
+    //this.state.velX = Math.min(this.maxAccel, Math.max(-this.maxAccel, this.state.velX))
+    //this.state.velY = Math.min(this.maxAccel, Math.max(-this.maxAccel, this.state.velY))
+    this.state.x += this.state.velX * this.state.temperature
+    this.state.y += this.state.velY * this.state.temperature
+    this.collideScreen()
+    this.style.left = `${this.state.x}px`
+    this.style.top = `${this.state.y}px`
+  }
+
 
   //
   // interacting forces 
 
-  interact(totalCount) {
-    if (!totalCount) return
-    const step = 1 / totalCount
+  interact() {
+    if (!this.others.length) return
+    const step = 1 / this.others.length
     this.repelAll(step)
-    if (!this.connected.Length) return
+    if (!this.connected.length) return
     this.attractConnected(step)
   }
 
   repelAll(step) {
-    const mod = this.repelJolt * step
+    const repulsiveForce = this.repulsiveStrength //* step
     for (const other of this.others) {
       this.attract(other,
-        //x => mod * 2 / ((x/this.repelDistance) + 1) - 1
-        x => -mod * (this.repelDistance * this.repelDistance) / (x * x)
+        distance => -this.optimalDistance * this.optimalDistance / (distance ** 2) * repulsiveForce
+      )
+    }
+  }
+  
+  attractConnected(step) {
+    const attractiveForce = this.attractiveStrength //* step
+    for (const connected of this.connected) {
+      this.attract(connected,
+        distance => (distance * distance) / this.optimalDistance * attractiveForce
       )
     }
   }
 
-  attractConnected(step) {
-    const mod = this.attractJolt * step * others.count
-    for (const connected of this.connected) {
-      this.attract(connected,
-        //x => mod * Math.tanh((1 - x/this.attractDistance) / this.attractSkew), 
-        x => mod * (x * x) / this.attractDistance
-      )
-    }
+  attract(other, mod=x=>x) {
+    let dx = this.state.x - other.state.x 
+    let dy = this.state.y - other.state.y
+    const distance = Math.sqrt(dx * dx + dy * dy)
+    const force = mod(distance)
+    dx *= force
+    dy *= force
+    // attract self
+    this.state.velX -= dx
+    this.state.velY -= dy
+    // attract other
+    other.state.velX += dx
+    other.state.velY += dy
   }
 
   updateBounds() {
@@ -131,21 +135,6 @@ export default class ParticleElement extends Component {
       right:  bounds.width - halfRectWidth,
       bottom: bounds.height - halfRectHeight,
     }
-  }
-
-  attract(other, mod=x=>x) {
-    let dx = this.state.x - other.state.x 
-    let dy = this.state.y - other.state.y
-    const distance = Math.sqrt(dx * dx + dy * dy)
-    const alt = mod(distance)
-    dx *= alt
-    dy *= alt
-    // attract self
-    this.state.velX += dx
-    this.state.velY += dy
-    // attract other
-    other.state.velX -= dx
-    other.state.velY -= dx
   }
 
   repelWall(deltaLeft, deltaTop, deltaRight, deltaBottom, process=x=>x) {

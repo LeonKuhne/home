@@ -872,6 +872,7 @@ input, select, button {
   padding: 0.5rem;
   font-size: smaller;
   z-index: 3;
+  white-space: nowrap;
 }
 
 /*# sourceMappingURL=styles.css.map */
