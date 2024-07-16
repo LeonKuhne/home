@@ -1,0 +1,8 @@
+infos home.leonk.dev
+ls | indent "$B_TRIANGLE "
+debug $(repeat 14 echo -n 'X')
+help .cd | indent "$B_BULLET "
+
+function run() {
+	./run.sh
+}
