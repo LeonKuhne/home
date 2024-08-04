@@ -80,7 +80,7 @@ export default class Analytics {
 
   moveScheduleToToday()  {
     for (let i = 0; i < this.schedule.length; i++) {
-      Timeslot.update(this.schedule[i], new Date())
+      Timeslot.update(this.schedule[i], new Date(), true)
     }
   }
 }

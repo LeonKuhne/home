@@ -64,15 +64,10 @@ export default class QuarterHour extends Component {
   static quarteredDay() {
     let quarters = []
     for (let hour = 0; hour < 24; hour++) {
-      quarters = quarters.concat(QuarterHour.quarteredHour(hour))
-    }
-    return quarters
-  }
-
-  static quarteredHour(hour) {
-    let quarters = []
-    for (let quarter = 0; quarter < 4; quarter++) {
-      quarters.push(new Timeslot(hour, quarter))
+      // quartered hour
+      for (let quarter = 0; quarter < 4; quarter++) {
+        quarters.push(new Timeslot(hour, quarter))
+      }
     }
     return quarters
   }
