@@ -6,12 +6,18 @@ ls | indent "$B_TRIANGLE "
 debug $(repeat 14 echo -n 'X')
 help .cd | indent "$B_BULLET "
 
-function run() {
-	hotreload "docs"
+export_dir="docs"
+
+function serve() {
+  python -m http.server 8000 -d "$export_dir"
 }
 
-function release() {
-	build "docs"
+function build() {
+	. ./scripts/build.sh
+}
+
+function run() {
+	. ./scripts/hot.sh
 }
 
 function setup() {

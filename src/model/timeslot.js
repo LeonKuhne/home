@@ -7,10 +7,11 @@ export default class Timeslot {
     Timeslot.update(this, new Date())
   }
 
-  static update(timeslot, date) {
+  static update(timeslot, date, clearTask = false) {
     date.setHours(timeslot.hour, timeslot.quarter * 15) 
     timeslot.timestr = date.toLocaleTimeString('en-US', { hour: 'numeric', hour12: true, minute: '2-digit' })
     timeslot.time = date.getTime()
+    if (clearTask) timeslot.task = null
   }
 
   static now() {
